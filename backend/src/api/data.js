@@ -6,3 +6,10 @@ export const getTableData = () => {
     method: 'get'
   })
 }
+
+export const getUsersTableData = () => {
+    return axios.request({
+        url: 'get_users_table_data',
+        method: 'get'
+    })
+}

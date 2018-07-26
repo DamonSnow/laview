@@ -166,6 +166,35 @@ export default [
     ]
   },
   {
+      path: '/users',
+      name: 'users',
+      meta: {
+          icon: 'users',
+          title: '用户管理'
+      },
+      component: Main,
+      children: [
+          {
+              path: 'index',
+              name: '用户管理',
+              meta: {
+                  icon: 'document-text',
+                  title: '上传Csv'
+              },
+              component: () => import('@/view/user-manage/users/index.vue')
+          },
+          {
+              path: 'update_paste_page',
+              name: 'update_paste_page',
+              meta: {
+                  icon: 'clipboard',
+                  title: '粘贴表格数据'
+              },
+              component: () => import('@/view/update/update-paste.vue')
+          }
+      ]
+  },
+  {
     path: '/directive',
     name: 'directive',
     meta: {

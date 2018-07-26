@@ -16,3 +16,20 @@ export const getTableData = req => {
     msg: ''
   }
 }
+
+export const getUsersTableData = req => {
+    let tableData = []
+    doCustomTimes(5, () => {
+        tableData.push(Mock.mock({
+            name: '@name',
+            email: '@email',
+            job_number: '@',
+            created_at: '@date'
+        }))
+    })
+    return {
+        code: 200,
+        data: tableData,
+        msg: ''
+    }
+}
