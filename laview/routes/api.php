@@ -16,3 +16,20 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', function($api) {
+    $api->get('version', function() {
+
+        return response('this is version v1');
+    });
+    $api->get('users/{id}','App\Http\Controllers\Api\UserController@getUser');
+    $api->get('users','App\Http\Controllers\Api\UserController@users');
+    $api->post('login','App\Http\Controllers\Api\AuthenticateController@login');
+});
+
+$api->version('v2', function($api) {
+    $api->get('version', function() {
+        return response('this is version v2');
+    });
+});
