@@ -31,16 +31,16 @@ class AuthenticateController extends ApiController
         ]);
     }
 
-    public function username()
-    {
-        return 'email';
-    }
+//    public function username()
+//    {
+//        return 'email';
+//    }
 
     // 登录
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email'    => 'required|exists:user',
+            'email'    => 'required|exists:users',
             'password' => 'required|between:5,32',
         ]);
 
@@ -55,7 +55,8 @@ class AuthenticateController extends ApiController
         $credentials = $this->credentials($request);
 
         if ($this->guard('api')->attempt($credentials, $request->has('remember'))) {
-            return $this->sendLoginResponse($request);
+            //获取到accessToken&refreshToken后由于passport返回的内容时string,将其转换后格式化输出
+            return $this->success(json_decode($this->sendLoginResponse($request)->getContent()));
         }
 
         return $this->setStatusCode(401)->failed('登录失败');
@@ -99,7 +100,7 @@ class AuthenticateController extends ApiController
         if (empty($db_user)){
 
             $db_user = User::forceCreate([
-                'phone' => '',
+                'email' => '',
                 'xxUnionId' => $openId,
                 'nickname' => $user->nickname,
                 'head' => $user->avatar,
@@ -127,7 +128,7 @@ class AuthenticateController extends ApiController
             'grant_type' => 'password',
             'client_id' => $password_client->id,
             'client_secret' => $password_client->secret,
-            'username' => $credentials['phone'],
+            'username' => $credentials['email'],
             'password' => $credentials['password'],
             'scope' => ''
         ]);
