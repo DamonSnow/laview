@@ -24,6 +24,7 @@ class httpRequest {
     instance.interceptors.request.use(config => {
       if (!config.url.includes('/users')) {
         config.headers['x-access-token'] = Cookies.get(TOKEN_KEY)
+        config.headers['Authorization'] = 'Bearer ' + Cookies.get(TOKEN_KEY)
       }
       // Spin.show()
       // 在发送请求之前做些什么

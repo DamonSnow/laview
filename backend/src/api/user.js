@@ -1,8 +1,8 @@
 import axios from '@/libs/api.request'
 
-export const login = ({ userName, password }) => {
+export const login = ({ email, password }) => {
   const data = {
-    userName,
+    email,
     password
   }
   return axios.request({

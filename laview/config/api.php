@@ -154,7 +154,7 @@ return [
     */
 
     'middleware' => [
-
+        'cors' => \Barryvdh\Cors\HandleCors::class,
     ],
 
     /*

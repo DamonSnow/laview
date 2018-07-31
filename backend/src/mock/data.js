@@ -23,7 +23,6 @@ export const getUsersTableData = req => {
         tableData.push(Mock.mock({
             name: '@name',
             email: '@email',
-            job_number: '@',
             created_at: '@date'
         }))
     })

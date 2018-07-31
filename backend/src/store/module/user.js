@@ -6,7 +6,7 @@ export default {
     userName: '',
     userId: '',
     avatorImgPath: '',
-    token: getToken(),
+    access_token: getToken(),
     access: ''
   },
   mutations: {
@@ -23,21 +23,21 @@ export default {
       state.access = access
     },
     setToken (state, token) {
-      state.token = token
+      state.access_token = token
       setToken(token)
     }
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, {userName, password}) {
-      userName = userName.trim()
+    handleLogin ({ commit }, {email, password}) {
+      email = email.trim()
       return new Promise((resolve, reject) => {
         login({
-          userName,
+          email,
           password
         }).then(res => {
           const data = res.data
-          commit('setToken', data.token)
+          commit('setToken', data.access_token)
           resolve()
         }).catch(err => {
           reject(err)
@@ -47,7 +47,7 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout(state.access_token).then(() => {
           commit('setToken', '')
           commit('setAccess', [])
           resolve()
@@ -63,12 +63,13 @@ export default {
     // 获取用户相关信息
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(res => {
+        getUserInfo(state.access_token).then(res => {
           const data = res.data
-          commit('setAvator', data.avator)
-          commit('setUserName', data.user_name)
-          commit('setUserId', data.user_id)
-          commit('setAccess', data.access)
+            console.log(data);
+          commit('setAvator', data.avatar)
+          commit('setUserName', data.name)
+          commit('setUserId', data.id)
+          commit('setAccess', data.active)
           resolve(data)
         }).catch(err => {
           reject(err)
