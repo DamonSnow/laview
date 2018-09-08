@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use League\OAuth2\Server\Exception\OAuthServerException;
 
 class ExceptionReport
 {
@@ -47,6 +48,7 @@ class ExceptionReport
      */
     public $doReport = [
         AuthenticationException::class => ['未授权',401],
+        OAuthServerException::class => ['未授权',401],
         ModelNotFoundException::class => ['改模型未找到',404]
     ];
 

@@ -1,17 +1,28 @@
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
-import { forEach, hasOneOf } from '@/libs/tools'
+import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 
 export const TOKEN_KEY = 'token'
+export const REFRESH_TOKEN_KEY = 'refresh_token'
 
 export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, {expires: config.cookieExpires || 1})
 }
 
+export const setRefreshToken = (refreshToken) => {
+  Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {expires: config.cookieExpires || 1})
+}
+
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
+  else return false
+}
+
+export const getRefreshToken = () => {
+  const refreshToken = Cookies.get(REFRESH_TOKEN_KEY)
+  if (refreshToken) return refreshToken
   else return false
 }
 
@@ -32,16 +43,16 @@ const showThisMenuEle = (item, access) => {
 export const getMenuByRouter = (list, access) => {
   let res = []
   forEach(list, item => {
-    if (item.meta && !item.meta.hideInMenu) {
+    if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
       let obj = {
         icon: (item.meta && item.meta.icon) || '',
         name: item.name,
         meta: item.meta
       }
-      if (hasChild(item) && showThisMenuEle(item, access)) {
+      if ((hasChild(item) || (item.meta && item.meta.showAlways)) && showThisMenuEle(item, access)) {
         obj.children = getMenuByRouter(item.children, access)
       }
-      if (item.meta.href) obj.href = item.meta.href
+      if (item.meta && item.meta.href) obj.href = item.meta.href
       if (showThisMenuEle(item, access)) res.push(obj)
     }
   })
@@ -52,7 +63,7 @@ export const getMenuByRouter = (list, access) => {
  * @param {Array} routeMetched 当前路由metched
  * @returns {Array}
  */
-export const getBreadCrumbList = (routeMetched) => {
+export const getBreadCrumbList = (routeMetched, homeRoute) => {
   let res = routeMetched.filter(item => {
     return item.meta === undefined || !item.meta.hide
   }).map(item => {
@@ -66,10 +77,7 @@ export const getBreadCrumbList = (routeMetched) => {
   res = res.filter(item => {
     return !item.meta.hideInMenu
   })
-  return [{
-    name: 'home',
-    to: '/home'
-  }, ...res]
+  return [Object.assign(homeRoute, { to: homeRoute.path }), ...res]
 }
 
 export const showTitle = (item, vm) => vm.$config.useI18n ? vm.$t(item.name) : ((item.meta && item.meta.title) || item.name)
@@ -131,29 +139,24 @@ const hasAccess = (access, route) => {
 }
 
 /**
+ * 权鉴
  * @param {*} name 即将跳转的路由name
  * @param {*} access 用户权限数组
  * @param {*} routes 路由列表
  * @description 用户是否可跳转到该页
  */
 export const canTurnTo = (name, access, routes) => {
-  const getHasAccessRouteNames = (list) => {
-    let res = []
-    list.forEach(item => {
+  const routePermissionJudge = (list) => {
+    return list.some(item => {
       if (item.children && item.children.length) {
-        res = [].concat(res, getHasAccessRouteNames(item.children))
-      } else {
-        if (item.meta && item.meta.access) {
-          if (hasAccess(access, item)) res.push(item.name)
-        } else {
-          res.push(item.name)
-        }
+        return routePermissionJudge(item.children)
+      } else if (item.name === name) {
+        return hasAccess(access, item)
       }
     })
-    return res
   }
-  const canTurnToNames = getHasAccessRouteNames(routes)
-  return canTurnToNames.indexOf(name) > -1
+
+  return routePermissionJudge(routes)
 }
 
 /**
@@ -174,13 +177,14 @@ export const getParams = url => {
  * @param {Array} list 标签列表
  * @param {String} name 当前关闭的标签的name
  */
-export const getNextName = (list, name) => {
-  let res = ''
+export const getNextRoute = (list, route) => {
+  let res = {}
   if (list.length === 2) {
-    res = 'home'
+    res = getHomeRoute(list)
   } else {
-    if (list.findIndex(item => item.name === name) === list.length - 1) res = list[list.length - 2].name
-    else res = list[list.findIndex(item => item.name === name) + 1].name
+    const index = list.findIndex(item => routeEqual(item, route))
+    if (index === list.length - 1) res = list[list.length - 2]
+    else res = list[index + 1]
   }
   return res
 }
@@ -192,7 +196,7 @@ export const getNextName = (list, name) => {
 export const doCustomTimes = (times, callback) => {
   let i = -1
   while (++i < times) {
-    callback()
+    callback(i)
   }
 }
 
@@ -277,4 +281,29 @@ export const findNodeDownward = (ele, tag) => {
 
 export const showByAccess = (access, canViewAccess) => {
   return hasOneOf(canViewAccess, access)
+}
+
+/**
+ * @description 根据name/params/query判断两个路由对象是否相等
+ * @param {*} route1 路由对象
+ * @param {*} route2 路由对象
+ */
+export const routeEqual = (route1, route2) => {
+  const params1 = route1.params || {}
+  const params2 = route2.params || {}
+  const query1 = route1.query || {}
+  const query2 = route2.query || {}
+  return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
+}
+
+/**
+ * 判断打开的标签列表里是否已存在这个新添加的路由对象
+ */
+export const routeHasExist = (tagNavList, routeItem) => {
+  let len = tagNavList.length
+  let res = false
+  doCustomTimes(len, (index) => {
+    if (routeEqual(tagNavList[index], routeItem)) res = true
+  })
+  return res
 }

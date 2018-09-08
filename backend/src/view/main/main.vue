@@ -1,7 +1,7 @@
 <template>
   <Layout style="height: 100%" class="main">
-    <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed">
-      <side-menu accordion :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
+    <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}">
+      <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
         <div class="logo-con">
           <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
@@ -17,8 +17,8 @@
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
       </Header>
-      <Content>
-        <Layout>
+      <Content class="main-content-con">
+        <Layout class="main-layout-con">
           <div class="tag-nav-wrapper">
             <tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>
           </div>
@@ -40,7 +40,7 @@ import User from './components/user'
 import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import { mapMutations, mapActions } from 'vuex'
-import { getNewTagList, getNextName } from '@/libs/util'
+import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 import './main.less'
@@ -92,26 +92,46 @@ export default {
     ...mapActions([
       'handleLogin'
     ]),
-    turnToPage (name) {
+    turnToPage (route) {
+      let { name, params, query } = {}
+      if (typeof route === 'string') name = route
+      else {
+        name = route.name
+        params = route.params
+        query = route.query
+      }
       if (name.indexOf('isTurnByHref_') > -1) {
         window.open(name.split('_')[1])
         return
       }
       this.$router.push({
-        name: name
+        name,
+        params,
+        query
       })
     },
     handleCollapsedChange (state) {
       this.collapsed = state
     },
-    handleCloseTag (res, type, name) {
-      const nextName = getNextName(this.tagNavList, name)
+    handleCloseTag (res, type, route) {
+      let openName = ''
+      if (type === 'all') {
+        this.turnToPage('home')
+        openName = 'home'
+      } else if (routeEqual(this.$route, route)) {
+        if (type === 'others') {
+          openName = route.name
+        } else {
+          const nextRoute = getNextRoute(this.tagNavList, route)
+          this.$router.push(nextRoute)
+          openName = nextRoute.name
+        }
+      }
       this.setTagNavList(res)
-      if (type === 'all') this.turnToPage('home')
-      else if (this.$route.name === name) this.$router.push({ name: nextName })
+      this.$refs.sideMenu.updateOpenName(openName)
     },
     handleClick (item) {
-      this.turnToPage(item.name)
+      this.turnToPage(item)
     }
   },
   watch: {
@@ -125,12 +145,14 @@ export default {
      * @description 初始化设置面包屑导航和标签导航
      */
     this.setTagNavList()
-    this.addTag(this.$store.state.app.homeRoute)
+    this.addTag({
+      route: this.$store.state.app.homeRoute
+    })
     this.setBreadCrumb(this.$route.matched)
     // 设置初始语言
     this.setLocal(this.$i18n.locale)
     // 文档提示
-    this.$Notice.open({
+    this.$Notice.info({
       title: '想快速上手，去看文档吧',
       duration: 0,
       render: (h) => {

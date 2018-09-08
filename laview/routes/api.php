@@ -12,7 +12,10 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+app('api.exception')->register(function (Exception $exception) {
+    $request = Illuminate\Http\Request::capture();
+    return app('App\Exceptions\Handler')->render($request, $exception);
+});
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

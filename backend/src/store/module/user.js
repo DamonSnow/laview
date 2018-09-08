@@ -1,12 +1,13 @@
 import { login, logout, getUserInfo } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, setRefreshToken, getToken, getRefreshToken } from '@/libs/util'
 
 export default {
   state: {
     userName: '',
     userId: '',
     avatorImgPath: '',
-    access_token: getToken(),
+    token: getToken(),
+    refresh_token: getRefreshToken(),
     access: ''
   },
   mutations: {
@@ -23,8 +24,12 @@ export default {
       state.access = access
     },
     setToken (state, token) {
-      state.access_token = token
+      state.token = token
       setToken(token)
+    },
+    setRefreshToken (state, refreshToken) {
+      state.refresh_token = refreshToken
+      setRefreshToken(refreshToken)
     }
   },
   actions: {
@@ -37,7 +42,9 @@ export default {
           password
         }).then(res => {
           const data = res.data
-          commit('setToken', data.access_token)
+          console.log(data.data)
+          commit('setToken', data.data.access_token)
+          commit('setRefreshToken', data.data.refresh_token)
           resolve()
         }).catch(err => {
           reject(err)
@@ -47,7 +54,7 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.access_token).then(() => {
+        logout(state.token).then(() => {
           commit('setToken', '')
           commit('setAccess', [])
           resolve()
@@ -63,13 +70,13 @@ export default {
     // 获取用户相关信息
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.access_token).then(res => {
-          const data = res.data
-            console.log(data);
+        getUserInfo(state.token).then(res => {
+          const data = res.data.data
+          console.log(res.data)
           commit('setAvator', data.avatar)
           commit('setUserName', data.name)
           commit('setUserId', data.id)
-          commit('setAccess', data.active)
+          commit('setAccess', ['super_admin', 'admin'])
           resolve(data)
         }).catch(err => {
           reject(err)

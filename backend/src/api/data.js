@@ -7,9 +7,9 @@ export const getTableData = () => {
   })
 }
 
-export const getUsersTableData = () => {
-    return axios.request({
-        url: 'get_users_table_data',
-        method: 'get'
-    })
+export const getDragList = () => {
+  return axios.request({
+    url: 'get_drag_list',
+    method: 'get'
+  })
 }
