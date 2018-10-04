@@ -38,7 +38,6 @@ class UserController extends ApiController
 
     public function getInfo()
     {
-//        dd(111);
-        return $this->success(auth('api')->user());
+        return $this->success(new UserResource(User::find(auth('api')->id())));
     }
 }

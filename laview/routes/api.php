@@ -26,12 +26,17 @@ $api->version('v1', function($api) {
 
         return response('this is version v1');
     });
+    $api->group(['middleware'=>['auth:api']],function($api){
+        $api->post('logout','App\Http\Controllers\Api\AuthenticateController@logout');
+        $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
+    });
 
 
-    $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo');
     $api->get('users/{id}','App\Http\Controllers\Api\UserController@getUser');
     $api->get('users','App\Http\Controllers\Api\UserController@users');
     $api->post('login','App\Http\Controllers\Api\AuthenticateController@login');
+
+    $api->post('refresh','App\Http\Controllers\Api\AuthenticateController@refresh');
 });
 
 $api->version('v2', function($api) {

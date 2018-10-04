@@ -22,6 +22,15 @@ export default [
     component: () => import('@/view/login/login.vue')
   },
   {
+      path: '/logout',
+      name: 'login',
+      meta: {
+          title: 'logout',
+          hideInMenu: true
+      },
+
+  },
+  {
     path: '/',
     name: '_home',
     redirect: '/home',
@@ -40,31 +49,6 @@ export default [
           notCache: true
         },
         component: () => import('@/view/single-page/home')
-      }
-    ]
-  },
-  {
-    path: '',
-    name: 'doc',
-    meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
-  },
-  {
-    path: '/join',
-    name: 'join',
-    component: Main,
-    children: [
-      {
-        path: 'join_page',
-        name: 'join_page',
-        meta: {
-          icon: '_qq',
-          title: 'QQ群'
-        },
-        component: () => import('@/view/join-page.vue')
       }
     ]
   },

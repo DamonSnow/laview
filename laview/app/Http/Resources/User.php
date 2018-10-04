@@ -21,7 +21,8 @@ class User extends JsonResource
             'avatar' => $this->avatar,
             'email' => $this->email,
             'phone' => $this->phone,
-            'job_number' => $this->job_number
+            'job_number' => $this->job_number,
+            'access' => $this->when($request->route()->getName() == 'get_info',$this->permissions->pluck('name'))
         ];
     }
 }

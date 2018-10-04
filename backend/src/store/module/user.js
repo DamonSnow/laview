@@ -1,4 +1,4 @@
-import { login, logout, getUserInfo } from '@/api/user'
+import { login, logout, getUserInfo, refreshToken } from '@/api/user'
 import { setToken, setRefreshToken, getToken, getRefreshToken } from '@/libs/util'
 
 export default {
@@ -42,7 +42,6 @@ export default {
           password
         }).then(res => {
           const data = res.data
-          console.log(data.data)
           commit('setToken', data.data.access_token)
           commit('setRefreshToken', data.data.refresh_token)
           resolve()
@@ -52,14 +51,15 @@ export default {
       })
     },
     // 退出登录
-    handleLogOut ({ state, commit }) {
+    handleLogOut ({ dispatch, state, commit }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('setToken', '')
           commit('setAccess', [])
           resolve()
         }).catch(err => {
-          reject(err)
+          console.log(err)
+          dispatch('refreshToken', state)
         })
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
         // commit('setToken', '')
@@ -68,15 +68,29 @@ export default {
       })
     },
     // 获取用户相关信息
-    getUserInfo ({ state, commit }) {
+    getUserInfo ({ dispatch, state, commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(res => {
           const data = res.data.data
-          console.log(res.data)
           commit('setAvator', data.avatar)
           commit('setUserName', data.name)
-          commit('setUserId', data.id)
-          commit('setAccess', ['super_admin', 'admin'])
+          commit('setUserId', data.user_id)
+          commit('setAccess', data.access)
+          resolve(data)
+        }).catch(err => {
+          console.log(err)
+          dispatch('refreshToken', state)
+          // reject(err)
+        })
+      })
+    },
+    refreshToken ({ dispatch, state, commit }) {
+      return new Promise((resolve, reject) => {
+        refreshToken(state.refresh_token).then(res => {
+          const data = res.data
+          commit('setToken', data.access_token)
+          commit('setRefreshToken', data.refresh_token)
+          dispatch('getUserInfo', state)
           resolve(data)
         }).catch(err => {
           reject(err)

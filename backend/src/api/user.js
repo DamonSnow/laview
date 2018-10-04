@@ -28,3 +28,14 @@ export const logout = (token) => {
     method: 'post'
   })
 }
+
+export const refreshToken = (refreshToken) => {
+  const data = {
+    refresh_token: refreshToken
+  }
+  return axios.request({
+    url: 'refresh',
+    data,
+    method: 'post'
+  })
+}

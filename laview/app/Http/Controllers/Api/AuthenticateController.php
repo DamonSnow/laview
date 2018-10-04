@@ -10,7 +10,9 @@ namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\ApiTokenCookieFactory;
 use Laravel\Passport\Client;
 use Socialite;
 
@@ -160,5 +162,27 @@ class AuthenticateController extends ApiController
         $msg = $request['errors'];
         $code = $request['code'];
         return $this->setStatusCode($code)->failed($msg);
+    }
+
+    public function refresh(Request $request)
+    {
+        // 个人感觉通过.env配置太复杂，直接从数据库查更方便
+        $password_client = Client::query()->where('password_client',1)->latest()->first();
+
+        $request->request->add([
+            'grant_type' => 'refresh_token',
+            'client_id' => $password_client->id,
+            'client_secret' => $password_client->secret,
+            'scope' => ''
+        ]);
+
+        $proxy = Request::create(
+            'oauth/token',
+            'POST'
+        );
+
+        $response = \Route::dispatch($proxy);
+
+        return $response;
     }
 }
