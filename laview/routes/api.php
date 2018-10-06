@@ -29,11 +29,12 @@ $api->version('v1', function($api) {
     $api->group(['middleware'=>['auth:api']],function($api){
         $api->post('logout','App\Http\Controllers\Api\AuthenticateController@logout');
         $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
+
     });
 
-
-    $api->get('users/{id}','App\Http\Controllers\Api\UserController@getUser');
     $api->get('users','App\Http\Controllers\Api\UserController@users');
+    $api->get('users/{id}','App\Http\Controllers\Api\UserController@getUser');
+
     $api->post('login','App\Http\Controllers\Api\AuthenticateController@login');
 
     $api->post('refresh','App\Http\Controllers\Api\AuthenticateController@refresh');

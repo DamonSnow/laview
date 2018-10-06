@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { TOKEN_KEY } from '@/libs/util'
+import store from '@/store'
 // import { Spin } from 'iview'
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -40,6 +41,11 @@ class HttpRequest {
     })
     // 响应拦截
     instance.interceptors.response.use(res => {
+      console.log('response interceptor:')
+      console.log(res)
+      if (res.code === 401) {
+        store.dispatch('refreshToken')
+      }
       this.distroy(url)
       const { data, status } = res
       return { data, status }

@@ -23,7 +23,7 @@ export default [
   },
   {
       path: '/logout',
-      name: 'login',
+      name: 'logout',
       meta: {
           title: 'logout',
           hideInMenu: true
@@ -50,6 +50,26 @@ export default [
         },
         component: () => import('@/view/single-page/home')
       }
+    ]
+  },
+  {
+    path: '/user-manage',
+    name: 'user-manage',
+    meta: {
+      icon: 'md-menu',
+      title: '用户权限'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'user-list',
+        name: 'user-list',
+        meta: {
+            icon: 'md-funnel',
+            title: '用户列表'
+        },
+        component: () => import('@/view/user-manage/user.vue')
+      },
     ]
   },
   {

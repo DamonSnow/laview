@@ -39,3 +39,10 @@ export const refreshToken = (refreshToken) => {
     method: 'post'
   })
 }
+
+export const users = (token) => {
+  return axios.request({
+    url: 'users',
+    method: 'get'
+  })
+}
