@@ -33,7 +33,21 @@ class UserController extends ApiController
 
     public function users()
     {
-        return $this->success(UserResource::collection(User::paginate(Input::get('limit') ?: 20)));
+        if(!empty(Input::get('jobNum'))) {
+            switch (Input::get('jobNum')) {
+                case 'desc':
+                    $user = User::orderby('job_number','DESC');
+                    break;
+                case 'asc':
+                    $user = User::orderby('job_number','ASC');
+                    break;
+                default:
+                    $user = new User();
+            }
+        } else {
+            $user = new User();
+        }
+        return UserResource::collection($user->paginate(Input::get('size') ?: 20));
     }
 
     public function getInfo()

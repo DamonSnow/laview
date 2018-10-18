@@ -40,9 +40,14 @@ export const refreshToken = (refreshToken) => {
   })
 }
 
-export const users = (token) => {
+export const users = (page, size, jobNum) => {
   return axios.request({
     url: 'users',
+    params: {
+        page,
+        size,
+        jobNum
+    },
     method: 'get'
   })
 }

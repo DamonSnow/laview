@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <Table :columns="columns" :data="data" :loading="loading" border size="small"></Table>
+      <Table :columns="columns" :data="data" :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
           <Page
@@ -24,8 +24,17 @@ export default {
     return {
       columns: [
         {
+          type: 'index',
+          width: 60,
+          align: 'center',
+          indexMethod: (row) => {
+            return (row._index + 1) + (this.size * this.current) - this.size;
+          }
+        },
+        {
           title: '工号',
-          key: 'job_number'
+          key: 'job_number',
+          sortable: 'custom'
         },
         {
           title: '名称',
@@ -44,7 +53,8 @@ export default {
       loading: false,
       total: 0,
       current: 1,
-      size: 10
+      size: 10,
+      sortType: 'normal', //normal asc desc
     }
   },
   methods: {
@@ -53,14 +63,23 @@ export default {
 
       this.loading = true
 
-      users().then(res => {
-        console.log(res.data.data)
-        this.data = res.data.data
-        this.loading = false
+      users(this.current, this.size, this.sortType).then(res => {
+        console.log(res.data)
+        this.data = res.data.data;
+        this.total = res.data.meta.total;
+        this.loading = false;
       })
     },
-    handleChangeSize () {
-      this.getData()
+    handleChangeSize (val) {
+      this.size = val;
+      this.$nextTick(() => {
+        this.getData();
+      })
+    },
+    handleSortChange ({ columns, key, order }) {
+      this.sortType = order;
+      this.current = 1;
+      this.getData();
     }
   },
   mounted: function () {
