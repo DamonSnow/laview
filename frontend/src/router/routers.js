@@ -63,6 +63,15 @@ export default [
         },
         component: () => import('@/view/user-manage/user.vue')
       },
+      {
+          path: 'roles',
+          name: 'roles',
+          meta: {
+              icon: 'md-funnel',
+              title: '权限列表'
+          },
+          component: () => import('@/view/user-manage/user.vue')
+      },
     ]
   },
   {

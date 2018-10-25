@@ -1,5 +1,11 @@
 export default {
   home: '首页',
+  'user-manage': '用户管理',
+  'user-list': '用户列表',
+  roles: '权限列表',
+  'add-user': '新增用户',
+  'edit': '编辑',
+  'auth': '权限',
   components: '组件',
   count_to_page: '数字渐变',
   tables_page: '多功能表格',

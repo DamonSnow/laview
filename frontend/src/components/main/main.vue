@@ -115,10 +115,10 @@ export default {
     },
     handleCloseTag (res, type, route) {
       if (type === 'all') {
-        this.turnToPage('home')
+        this.turnToPage(this.$config.homeName)
       } else if (routeEqual(this.$route, route)) {
-        if (type === 'others') {
-        } else {
+        if (type !== 'others') {
+
           const nextRoute = getNextRoute(this.tagNavList, route)
           this.$router.push(nextRoute)
         }
@@ -145,10 +145,11 @@ export default {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
+    this.setTagNavList()
     this.addTag({
       route: this.$store.state.app.homeRoute
     })
-    this.setTagNavList()
+
     this.setBreadCrumb(this.$route)
     // 设置初始语言
     this.setLocal(this.$i18n.locale)

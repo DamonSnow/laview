@@ -28,9 +28,9 @@
     <Card>
       <p slot="title">
         <Icon type="ios-film-outline"></Icon>
-        用户列表
+        {{ $t('user-list') }}
       </p>
-      <Button @click="addModal = true" type="primary" slot="extra">新增用户</Button>
+      <Button @click="addModal = true" type="primary" slot="extra">{{ $t('add-user') }}</Button>
       <Table :columns="columns" :data="data" :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
@@ -126,7 +126,7 @@ export default {
                         this.authModal = true;
                     }
                   }
-                },'权限'),
+                },this.$t('auth')),
                 h('Button',{
                   props: {
                     type : 'info',
@@ -140,7 +140,7 @@ export default {
                           this.infoModal = true;
                       }
                   }
-              },'修改')
+              },this.$t('edit'))
               ]);
             },
         }

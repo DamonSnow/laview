@@ -1,5 +1,8 @@
 export default {
   home: 'Home',
+  'user-manage': 'Users Manage',
+  'user-list': 'Users',
+  roles: 'Roles',
   components: 'Components',
   count_to_page: 'Count-to',
   tables_page: 'Table',
