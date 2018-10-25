@@ -50,7 +50,8 @@ export default [
     name: 'user-manage',
     meta: {
       icon: 'md-menu',
-      title: '用户权限'
+      title: '用户权限',
+      access: ['super_admin']
     },
     component: Main,
     children: [
@@ -64,13 +65,13 @@ export default [
         component: () => import('@/view/user-manage/user.vue')
       },
       {
-          path: 'roles',
-          name: 'roles',
+          path: 'permissions-list',
+          name: 'permissions-list',
           meta: {
               icon: 'md-funnel',
               title: '权限列表'
           },
-          component: () => import('@/view/user-manage/user.vue')
+          component: () => import('@/view/user-manage/permissions.vue')
       },
     ]
   },
