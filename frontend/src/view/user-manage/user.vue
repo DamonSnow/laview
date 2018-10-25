@@ -1,6 +1,36 @@
 <template>
   <div>
+    <!-- 封装成组件 -->
+    <Modal
+      v-model="addModal"
+      title="Title"
+      :loading="loading">
+      <p slot="header">新增用户</p>
+      <p>新增用户使用form表单实现</p>
+    </Modal>
+    <!-- 封装成组件 -->
+    <Modal
+      v-model="authModal"
+      title="Title"
+      :loading="loading">
+      <p slot="header">用户角色</p>
+      <p>编辑用户角色的窗口，使用穿梭框实现</p>
+    </Modal>
+    <!-- 封装成组件 -->
+    <Modal
+      v-model="infoModal"
+      title="Title"
+      :loading="loading">
+      <p slot="header">用户信息编辑</p>
+      <p>编辑用户信息使用form表单实现</p>
+    </Modal>
+    <!-- 封装成组件 -->
     <Card>
+      <p slot="title">
+        <Icon type="ios-film-outline"></Icon>
+        用户列表
+      </p>
+      <Button @click="addModal = true" type="primary" slot="extra">新增用户</Button>
       <Table :columns="columns" :data="data" :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
@@ -34,11 +64,44 @@ export default {
         {
           title: '工号',
           key: 'job_number',
-          sortable: 'custom'
+          sortable: 'custom',
+          width: 100
         },
         {
           title: '名称',
-          key: 'name'
+          key: 'name',
+          render: (h, params) => {
+
+            return h('div',[
+              h('Avatar', {
+                props: {
+                  src : params.row.avatar
+                }
+              }),
+              h('span',params.row.name)
+            ]);
+          },
+        },
+        {
+          title: 'Active',
+          key: 'active',
+          width: 100,
+          render: (h, params) => {
+            let color = '';
+            let text = '';
+            if(parseInt(params.row.active) === 1) {
+              color = 'success';
+              text = '激活'
+            } else {
+              color = 'error';
+              text = '未激活'
+            }
+            return h('Tag',{
+              props: {
+                  color: color
+              }
+            },text);
+          },
         },
         {
           title: '邮箱',
@@ -47,6 +110,39 @@ export default {
         {
           title: '手机',
           key: 'phone'
+        },
+        {
+            title: '操作',
+            key: 'user_id',
+            render: (h, params) => {
+              return h('div',[
+                h('Button', {
+                  props: {
+                    type : 'info',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                        this.authModal = true;
+                    }
+                  }
+                },'权限'),
+                h('Button',{
+                  props: {
+                    type : 'info',
+                    size: 'small'
+                  },
+                  style: {
+                    margin: '0 0 0 5px'
+                  },
+                  on: {
+                      click: () => {
+                          this.infoModal = true;
+                      }
+                  }
+              },'修改')
+              ]);
+            },
         }
       ],
       data: [],
@@ -54,6 +150,9 @@ export default {
       total: 0,
       current: 1,
       size: 10,
+      infoModal: false,
+      authModal: false,
+      addModal: false,
       sortType: 'normal', //normal asc desc
     }
   },
