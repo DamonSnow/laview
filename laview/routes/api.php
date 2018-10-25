@@ -26,10 +26,11 @@ $api->version('v1', function($api) {
 
         return response('this is version v1');
     });
-    $api->group(['middleware'=>['auth:api']],function($api){
+    $api->group(['middleware'=>['auth:api','cors']],function($api){
         $api->post('logout','App\Http\Controllers\Api\AuthenticateController@logout');
         $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
         $api->get('users','App\Http\Controllers\Api\UserController@users');
+        $api->resource('permissions','App\Http\Controllers\Api\PermissionsController');
     });
 
 
