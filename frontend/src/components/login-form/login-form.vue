@@ -35,7 +35,8 @@ export default {
       type: Array,
       default: () => {
         return [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { min: 5, max: 32, message: '密码长度在5~32个字符', trigger: 'blur' }
         ]
       }
     }

@@ -28,12 +28,15 @@ export default {
       'getUserInfo'
     ]),
     handleSubmit ({ email, password }) {
+      let _this = this;
       this.handleLogin({ email, password }).then(res => {
         this.getUserInfo().then(res => {
           this.$router.push({
             name: this.$config.homeName
           })
         })
+      }).catch(function (error) {
+          _this.$Message.error('登录失败')
       })
     }
   }

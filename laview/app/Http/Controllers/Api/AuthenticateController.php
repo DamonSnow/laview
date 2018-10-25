@@ -51,6 +51,7 @@ class AuthenticateController extends ApiController
                 'errors' => $validator->errors()->toArray(),
                 'code' => 401,
             ]);
+
             return $this->sendFailedLoginResponse($request);
         }
 

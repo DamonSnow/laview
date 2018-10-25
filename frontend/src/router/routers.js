@@ -49,7 +49,7 @@ export default [
     path: '/user-manage',
     name: 'user-manage',
     meta: {
-      icon: 'md-menu',
+      icon: 'ios-people',
       title: '用户权限',
       access: ['super_admin']
     },
@@ -59,7 +59,7 @@ export default [
         path: 'user-list',
         name: 'user-list',
         meta: {
-          icon: 'md-funnel',
+          icon: 'ios-people',
           title: '用户列表'
         },
         component: () => import('@/view/user-manage/user.vue')
@@ -68,7 +68,7 @@ export default [
           path: 'permissions-list',
           name: 'permissions-list',
           meta: {
-              icon: 'md-funnel',
+              icon: 'md-nuclear',
               title: '权限列表'
           },
           component: () => import('@/view/user-manage/permissions.vue')
