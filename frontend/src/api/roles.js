@@ -1,8 +1,8 @@
 import axios from '@/libs/api.request'
 
-export const permissions = (page, size) => {
+export const roles = (page, size) => {
     return axios.request({
-        url: 'permissions',
+        url: 'roles',
         params: {
             page,
             size,
@@ -11,21 +11,22 @@ export const permissions = (page, size) => {
     })
 }
 
-export const addPermission = (name, comment) => {
+export const addRole = (name, permissions, comment) => {
     let data = {
       name,
+      permissions,
       comment
     };
     return axios.request({
-        url: 'permissions',
+        url: 'roles',
         data,
         method: 'post'
     })
 }
 
-export const allPermissions = () => {
+export const getRole = (id) => {
     return axios.request({
-        url: 'all_permissions',
+        url: `roles/${id}`,
         method: 'get'
     })
 }

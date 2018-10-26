@@ -47,12 +47,13 @@ class AuthenticateController extends ApiController
         ]);
 
         if ($validator->fails()) {
-            $request->request->add([
-                'errors' => $validator->errors()->toArray(),
-                'code' => 401,
-            ]);
+//            $request->request->add([
+//                'errors' => $validator->errors()->toArray(),
+//                'code' => 401,
+//            ]);
 
-            return $this->sendFailedLoginResponse($request);
+            return failed_response($validator->errors()->toArray(),'error',400);
+//            return $this->sendFailedLoginResponse($request);
         }
 
         $credentials = $this->credentials($request);

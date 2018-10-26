@@ -31,6 +31,8 @@ $api->version('v1', function($api) {
         $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
         $api->get('users','App\Http\Controllers\Api\UserController@users');
         $api->resource('permissions','App\Http\Controllers\Api\PermissionsController');
+        $api->get('all_permissions','App\Http\Controllers\Api\PermissionsController@allPermissions');
+        $api->resource('roles','App\Http\Controllers\Api\RoleController');
     });
 
 

@@ -31,7 +31,7 @@
         {{ $t('user-list') }}
       </p>
       <Button @click="addModal = true" type="primary" slot="extra">{{ $t('add-user') }}</Button>
-      <Table :columns="columns" :data="data" :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
+      <Table :columns="columns" :data="data" stripe :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
           <Page

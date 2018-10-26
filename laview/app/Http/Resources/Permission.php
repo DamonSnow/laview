@@ -26,7 +26,7 @@ class Permission extends JsonResource
             'name' => $this->name,
             'guard_name' => $this->guard_name,
             'comment' => $this->comment,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at->toDateString(),
         ];
     }
 }

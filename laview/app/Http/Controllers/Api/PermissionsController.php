@@ -33,13 +33,7 @@ class PermissionsController extends ApiController
             'name'    => 'required',
         ]);
         if ($validator->fails()) {
-            $request->request->add([
-                'errors' => $validator->errors()->toArray(),
-                'code' => 1001,
-            ]);
-            $msg = $request['errors'];
-            $code = $request['code'];
-            return $this->setStatusCode($code)->failed($msg);
+            return failed_response($validator->errors()->toArray(),'error',1001);
         }
         try {
             $permission = Permission::create(['name' => $request->input('name'),'comment' => $request->input('comment')]);
@@ -49,7 +43,11 @@ class PermissionsController extends ApiController
             $code = $e->getCode();
             return $this->setStatusCode($code)->failed($msg);
         }
+    }
 
-
+    public function allPermissions()
+    {
+        $permissions = new Permission();
+        return PermissionResource::collection($permissions->all());
     }
 }
