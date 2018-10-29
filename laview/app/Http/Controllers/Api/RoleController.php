@@ -8,20 +8,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Role;
+use Dingo\Api\Auth\Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\Role as RoleResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+
 
 class RoleController extends ApiController
 {
-//    public function __construct()
-//    {
-//        $this->middleware(['auth:api','cors']);
-//    }
+    public function __construct()
+    {
+        $this->middleware(['auth:api', 'cors']);
+    }
 
     public function index()
     {
@@ -37,15 +39,15 @@ class RoleController extends ApiController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'    => 'required',
+            'name' => 'required',
         ]);
         if ($validator->fails()) {
-            return failed_response($validator->errors()->toArray(),'error',1001);
+            return failed_response($validator->errors()->toArray(), 'error', 1001);
         }
         try {
             DB::beginTransaction();
             $permissions = $request['permissions'];
-            $role = Role::create(['name' => $request->input('name'),'comment' => $request->input('comment')]);
+            $role = Role::create(['name' => $request->input('name'), 'guard_name' => 'api', 'comment' => $request->input('comment')]);
             foreach ($permissions as $permission) {
                 $p = Permission::where('id', '=', $permission)->firstOrFail();
                 // 获取新创建的角色并分配权限
@@ -53,7 +55,7 @@ class RoleController extends ApiController
                 $role->givePermissionTo($p);
             }
             DB::commit();
-            return $this->success($role,'success');
+            return $this->success($role, 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();

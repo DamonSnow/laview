@@ -30,14 +30,14 @@ class PermissionsController extends ApiController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'    => 'required',
+            'name' => 'required',
         ]);
         if ($validator->fails()) {
-            return failed_response($validator->errors()->toArray(),'error',1001);
+            return failed_response($validator->errors()->toArray(), 'error', 1001);
         }
         try {
-            $permission = Permission::create(['name' => $request->input('name'),'comment' => $request->input('comment')]);
-            return $this->success($permission,'success');
+            $permission = Permission::create(['name' => $request->input('name'), 'guard_name' => 'api', 'comment' => $request->input('comment')]);
+            return $this->success($permission, 'success');
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $code = $e->getCode();
