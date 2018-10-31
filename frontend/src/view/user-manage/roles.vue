@@ -2,6 +2,7 @@
   <div>
         <!-- 封装成组件 -->
     <Modal
+      ref="addRoleModal"
       v-model="addModal"
       title="Title"
       :loading="loading"
@@ -75,6 +76,35 @@
           {
             title: '操作',
             key: 'id',
+            render: (h, params) => {
+              return h('div',[
+                h('Button', {
+                  props: {
+                    type : 'info',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                        this.$Message.info('编辑role');
+                    }
+                  }
+                },this.$t('edit')),
+                h('Button',{
+                  props: {
+                    type : 'error',
+                    size: 'small'
+                  },
+                  style: {
+                    margin: '0 0 0 5px'
+                  },
+                  on: {
+                    click: () => {
+                        this.$Message.info('删除role');
+                    }
+                  }
+                },this.$t('delete'))
+              ]);
+            },
           }
         ],
         data: [],
@@ -154,6 +184,8 @@
                     })
 
                 } else {
+                    //防止验证失败关闭model，需要将model的visible置为true
+                    _this.$refs.addRoleModal.visible = true;
                     _this.addModal = true;
                 }
             })

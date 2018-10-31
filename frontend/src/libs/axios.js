@@ -1,8 +1,9 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import { TOKEN_KEY, isTokenExpired } from '@/libs/util'
+import { TOKEN_KEY, isTokenExpired, REFRESH_TOKEN_KEY } from '@/libs/util'
 import store from '@/store'
 import router from '@/router/routers'
+import { refreshToken } from '@/api/user'
 // import { Spin } from 'iview'
 window.isRefreshing = false
 class HttpRequest {
@@ -63,13 +64,15 @@ class HttpRequest {
       const { data, status } = res
       return { data, status }
     }, error => {
-      // if( parseInt(error.response.status) === 401 ) {
-      //   store.dispatch('handleLogOut'); //可能是token过期，清除它
-      //   router.replace({ //跳转到登录页面
-      //     path: 'login',
-      //     query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
-      //   });
-      // }
+      if( parseInt(error.response.status) === 401 ) {
+        // refreshToken(Cookies.get(REFRESH_TOKEN_KEY)).then(response => {
+        //   setToken(response.)
+        // })
+        router.replace({ //跳转到登录页面
+          path: 'login',
+          query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+        });
+      }
       this.destroy(url)
       return Promise.reject(error)
     })

@@ -66,6 +66,35 @@
           {
             title: '操作',
             key: 'id',
+            render: (h, params) => {
+              return h('div',[
+                h('Button', {
+                  props: {
+                    type : 'info',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.$Message.info('编辑role');
+                    }
+                  }
+                },this.$t('edit')),
+                h('Button',{
+                  props: {
+                    type : 'error',
+                    size: 'small'
+                  },
+                  style: {
+                    margin: '0 0 0 5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.$Message.info('删除role');
+                    }
+                  }
+                },this.$t('delete'))
+              ]);
+            },
           }
         ],
         data: [],

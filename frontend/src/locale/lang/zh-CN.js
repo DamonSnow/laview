@@ -8,6 +8,7 @@ export default {
   'add-permission': '新增权限',
   'add-role': '新增角色',
   'edit': '编辑',
+  'delete': '删除',
   'auth': '权限',
   components: '组件',
   count_to_page: '数字渐变',
