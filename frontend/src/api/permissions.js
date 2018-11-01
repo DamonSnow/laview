@@ -29,3 +29,22 @@ export const allPermissions = () => {
         method: 'get'
     })
 }
+
+export const getPermission = (id) => {
+    return axios.request({
+        url: `permissions/${id}`,
+        method: 'get'
+    })
+}
+
+export const updatePermission = (id, name, comment) => {
+    let data = {
+        name,
+        comment
+    };
+    return axios.request({
+        url: `permissions/${id}`,
+        data,
+        method: 'put'
+    })
+}

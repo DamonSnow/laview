@@ -10,6 +10,8 @@ export default {
   'edit': '编辑',
   'delete': '删除',
   'auth': '权限',
+  "Enter Permission name": '输入权限名称',
+  "Enter role name": '输入角色名称',
   components: '组件',
   count_to_page: '数字渐变',
   tables_page: '多功能表格',

@@ -2,18 +2,27 @@
   <div>
         <!-- 封装成组件 -->
     <Modal
+      ref="addRoleModal"
       v-model="addModal"
       title="Title"
       :loading="loading"
-      @on-ok="handleSubmit('permissionForm')"
-      @on-cancel="handleReset('permissionForm')">
-      <p slot="header">新增权限</p>
-        <Form ref="permissionForm" :model="permission" :rules="ruleValidate" :label-width="80">
-            <FormItem label="权限" prop="name">
-                <Input v-model="permission.name" placeholder="Enter your name"></Input>
+      width="700"
+      @on-ok="handleSubmit('roleForm')"
+      @on-cancel="handleReset('roleForm')">
+      <p slot="header">{{ $t('add-role') }}</p>
+        <Form ref="roleForm" :model="role" :rules="ruleValidate" :label-width="80">
+            <FormItem label="角色" prop="name">
+                <Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>
+            </FormItem>
+            <FormItem label="权限" prop="permissions">
+                <Transfer
+                    :data="rights"
+                    :target-keys="role.permissions"
+                    :render-format="permission_rendor"
+                    @on-change="handlePermission"></Transfer>
             </FormItem>
             <FormItem label="备注">
-                <Input v-model="permission.comment" placeholder="备注"></Input>
+                <Input v-model="role.comment" placeholder="备注"></Input>
             </FormItem>
         </Form>
     </Modal>
@@ -24,7 +33,7 @@
         <Icon type="ios-film-outline"></Icon>
         {{ $t('permissions-list') }}
       </p>
-      <Button @click="addModal = true" type="primary" slot="extra">{{ $t('add-permission') }}</Button>
+      <Button @click="addModal = true" type="primary" slot="extra">{{ $t('add-role') }}</Button>
       <Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>
 
       <div style="text-align: center;margin: 16px 0">
@@ -42,7 +51,8 @@
 </template>
 
 <script>
-  import { permissions, addPermission } from '@/api/permissions'
+  import { roles, addRole } from '@/api/roles'
+  import { allPermissions } from '@/api/permissions'
   export default {
     data () {
       return {
@@ -56,7 +66,7 @@
             }
           },
           {
-            title: '权限',
+            title: '角色',
             key: 'name',
           },
           {
@@ -75,7 +85,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$Message.info('编辑role');
+                        this.$Message.info('编辑role');
                     }
                   }
                 },this.$t('edit')),
@@ -89,7 +99,7 @@
                   },
                   on: {
                     click: () => {
-                      this.$Message.info('删除role');
+                        this.$Message.info('删除role');
                     }
                   }
                 },this.$t('delete'))
@@ -103,16 +113,21 @@
         current: 1,
         size: 10,
         addModal: false,
-        sortType: 'normal', //normal asc desc
-        permission: {
+        rights: [],
+        role: {
             name: '',
+            permissions: [],
             comment: ''
         },
         ruleValidate: {
           name: [
             { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
-        }
+          permissions: [
+            { required: true, type: 'array', min: 1, message: 'Choose at least one hobby', trigger: 'change' },
+          ],
+        },
+
       }
     },
     methods: {
@@ -121,12 +136,23 @@
 
         this.loading = true
 
-        permissions(this.current, this.size).then(res => {
+        roles(this.current, this.size).then(res => {
 
           this.data = res.data.data;
           this.total = res.data.meta.total;
           this.loading = false;
         })
+      },
+      getPermissions () {
+          allPermissions(this.current, this.size).then(res => {
+              this.rights = res.data.data.reduce(function (per, item, index) {
+                  per[index] = [];
+                  per[index]['key'] = item['id'];
+                  per[index]['label'] = item['name'];
+                  per[index]['disable'] = false;
+                  return per;
+              },[]);
+          })
       },
       handleChangeSize (val) {
         this.size = val;
@@ -138,10 +164,8 @@
           let _this = this;
           _this.addModal = false;
             this.$refs[name].validate((valid) => {
-
                 if (valid) {
-                    addPermission(this.permission.name, this.permission.comment).then(res => {
-                        console.log(res.data)
+                    addRole(_this.role.name, _this.role.permissions, _this.role.comment).then(res => {
                         if(parseInt(res.data.code) === 200) {
                             this.$Message.success('新增权限成功');
                             this.getData();
@@ -157,16 +181,26 @@
                     })
 
                 } else {
+                    //防止验证失败关闭model，需要将model的visible置为true
+                    _this.$refs.addRoleModal.visible = true;
                     _this.addModal = true;
                 }
             })
       },
       handleReset (name) {
             this.$refs[name].resetFields();
-      }
+      },
+      handlePermission (newTargetKeys, direction, moveKeys) {
+
+          this.role.permissions = newTargetKeys;
+      },
+      permission_rendor (item) {
+        return item.label;
+      },
     },
     mounted: function () {
-      this.getData()
+      this.getData();
+      this.getPermissions();
     }
   }
 </script>

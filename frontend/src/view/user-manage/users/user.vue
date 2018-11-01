@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- 封装成组件 -->
-    <Modal
-      v-model="addModal"
-      title="Title"
-      :loading="loading">
-      <p slot="header">新增用户</p>
-      <p>新增用户使用form表单实现</p>
-    </Modal>
+    <!--<Modal-->
+      <!--v-model="addModal"-->
+      <!--title="Title"-->
+      <!--:loading="loading">-->
+      <!--<p slot="header">新增用户</p>-->
+      <!--<p>新增用户使用form表单实现</p>-->
+    <!--</Modal>-->
     <!-- 封装成组件 -->
     <Modal
       v-model="authModal"
@@ -17,20 +17,16 @@
       <p>编辑用户角色的窗口，使用穿梭框实现</p>
     </Modal>
     <!-- 封装成组件 -->
-    <Modal
-      v-model="infoModal"
-      title="Title"
-      :loading="loading">
-      <p slot="header">用户信息编辑</p>
-      <p>编辑用户信息使用form表单实现</p>
-    </Modal>
+    <create-user :add-user-modal="addUserModal" @on-complete="complete">
+
+    </create-user>
     <!-- 封装成组件 -->
     <Card>
       <p slot="title">
         <Icon type="ios-film-outline"></Icon>
         {{ $t('user-list') }}
       </p>
-      <Button @click="addModal = true" type="primary" slot="extra">{{ $t('add-user') }}</Button>
+      <Button @click="addUserModal = true" type="primary" slot="extra">{{ $t('add-user') }}</Button>
       <Table :columns="columns" :data="data" stripe :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
@@ -49,7 +45,11 @@
 
 <script>
 import { users } from '@/api/user'
+import createUser from './components/create_user.vue'
 export default {
+  components: {
+      createUser
+  },
   data () {
     return {
       columns: [
@@ -152,7 +152,7 @@ export default {
       size: 10,
       infoModal: false,
       authModal: false,
-      addModal: false,
+      addUserModal: false,
       sortType: 'normal', //normal asc desc
     }
   },
@@ -179,6 +179,9 @@ export default {
       this.sortType = order;
       this.current = 1;
       this.getData();
+    },
+    complete (e) {
+        this.addUserModal = e;
     }
   },
   mounted: function () {

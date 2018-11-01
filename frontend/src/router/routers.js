@@ -62,7 +62,7 @@ export default [
           icon: 'ios-people',
           title: '用户列表'
         },
-        component: () => import('@/view/user-manage/user.vue')
+        component: () => import('@/view/user-manage/users/user.vue')
       },
       {
         path: 'roles-list',
@@ -71,7 +71,7 @@ export default [
             icon: 'md-nuclear',
             title: '角色列表'
         },
-        component: () => import('@/view/user-manage/roles.vue')
+        component: () => import('@/view/user-manage/roles/roles.vue')
       },
       {
           path: 'permissions-list',
@@ -80,7 +80,16 @@ export default [
               icon: 'md-nuclear',
               title: '权限列表'
           },
-          component: () => import('@/view/user-manage/permissions.vue')
+          component: () => import('@/view/user-manage/permissions/permissions.vue')
+      },
+      {
+        path: 'test',
+        name: 'test',
+        meta: {
+          icon: 'md-nuclear',
+          title: 'test'
+        },
+        component: () => import('@/view/test/model.vue')
       },
     ]
   },

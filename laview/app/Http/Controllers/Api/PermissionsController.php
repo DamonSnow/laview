@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\Permission as PermissionResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
@@ -49,5 +50,43 @@ class PermissionsController extends ApiController
     {
         $permissions = new Permission();
         return PermissionResource::collection($permissions->all());
+    }
+
+    public function show($id)
+    {
+        $permission = Permission::find($id);
+        return $this->success($permission,'success');
+    }
+
+    public function update($id, Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return failed_response($validator->errors()->toArray(), 'error', 1001);
+            }
+            DB::beginTransaction();
+            $permission = Permission::find($id);
+            if($permission->name != $request->input('name')) $permission->name = $request->input('name');
+            if($permission->comment != $request->input('comment')) $permission->comment = $request->input('comment');
+            $permission->save();
+            DB::commit();
+            return $this->success('update','success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return $this->setStatusCode($code)->failed($msg);
+        }
+
+    }
+
+    public function delete($id)
+    {
+        $permission = Permission::find($id);
+        $permission->delete();
+        return $this->success('delete success','success');
     }
 }
