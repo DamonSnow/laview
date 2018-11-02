@@ -51,3 +51,12 @@ export const users = (page, size, jobNum) => {
     method: 'get'
   })
 }
+
+export const addUser = (user) => {
+    const data = Object.assign({},user);
+    return axios.request({
+        url: 'users',
+        data,
+        method: 'post'
+    })
+}

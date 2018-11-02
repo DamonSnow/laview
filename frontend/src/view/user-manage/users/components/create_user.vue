@@ -1,19 +1,35 @@
 <template>
-    <Modal v-bind:model="currentValue">
-        <p slot="header" style="text-align:center">
-            <Icon type="person-add"></Icon>
-            <span>新增用户</span>
-        </p>
-        <div style="text-align:center">
-            //表单主体
-            <div slot="footer">
-                <Button @click="close">取消</Button>
-                <Button type="info" :loading="modal_loading" @click="addUser">新增</Button>
-            </div>
-        </div>
+  <div>
+    <Modal
+      ref="createUserModal"
+      v-model="showModal"
+      title="新增用户"
+      :loading="loading"
+      @on-ok="handleSubmit('userForm')"
+      @on-cancel="handleReset('userForm')">
+      <p slot="header">新增用户</p>
+      <Form ref="userForm" :model="user" :rules="ruleValidate" :label-width="80">
+        <FormItem label="姓名" prop="name">
+          <Input v-model="user.name" :placeholder='$t("Enter User name")'></Input>
+        </FormItem>
+        <FormItem label="头像">
+          <Input v-model="user.avatar"></Input>
+        </FormItem>
+        <FormItem label="E-mail" prop="email">
+          <Input v-model="user.email"></Input>
+        </FormItem>
+        <FormItem label="工号" prop="job_number">
+          <Input v-model="user.job_number"></Input>
+        </FormItem>
+        <FormItem label="手机号">
+          <Input v-model="user.phone"></Input>
+        </FormItem>
+    </Form>
     </Modal>
+   </div>
 </template>
 <script>
+    import { addUser } from '@/api/user'
     export default {
         name: 'add-user-modal',
         props : {
@@ -21,38 +37,62 @@
         },
         data () {
             return {
-                currentValue: this.addUserModal,
-                show: this.addUserModal,
-                modal_loading: false,
-                formItem: {
-                    jobNum: '',
+                showModal: this.addUserModal,
+                loading: false,
+                user: {
                     name: '',
-                    dept: '',
+                    avatar: '',
                     email: '',
-                    phone: ''
+                    job_number: '',
+                    phone: '',
+                },
+                ruleValidate: {
+                    name: [
+                        { required: true, message: '姓名不能为空', trigger: 'blur' }
+                    ],
+                    email: [
+                        { required: true, message: 'email不能为空', trigger: 'blur' },
+                        { type: 'email', message: 'email格式不正确', trigger: 'blur' }
+                    ],
+                    job_number: [
+                        { required: true, message: '工号不能为空', trigger: 'blur' }
+                    ],
                 }
             }
         },
 
         methods: {
-            addUser () {
+            handleSubmit (name) {
                 let _this=this;
-                _this.modal_loading = true;
-                console.log(_this.formItem);
-                setTimeout(() => {
-                    _this.modal_loading = false;
-//                    _this.addUserModal = false;
-                    _this.$emit('on-complete',false);
-                    _this.$Message.success('Successfully delete');
-                }, 2000);
+
+                this.$refs[name].validate((valid) => {
+
+
+                    this.$refs[name].validate((valid) => {
+                        if (valid) {
+                           addUser(_this.user).then(res => {
+                               console.log(res.data)
+                           }).catch(function (error) {
+                               _this.showModal =true;
+                               _this.$Message.error(error.response.data.message);
+//                               _this.handleReset('userForm')
+                           })
+                        } else {
+                            _this.$refs.createUserModal.visible = true;
+                            _this.showModal = true;
+                        }
+                    })
+                });
+
             },
-            close () {
-                this.currentValue = false;
-                this.$emit('on-complete',!this.addUserModal);
+            handleReset (name) {
+                this.$refs[name].resetFields();
+//            _this.showAddModel = false;
+//            _this.$emit('showModel',false)
+            },
+            open () {
+                this.showModal = true;
             }
         },
-        mounted: function() {
-            console.log(this.currentValue)
-        }
     }
 </script>

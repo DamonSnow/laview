@@ -1,32 +1,18 @@
 <template>
   <div>
-    <!-- 封装成组件 -->
-    <!--<Modal-->
-      <!--v-model="addModal"-->
-      <!--title="Title"-->
-      <!--:loading="loading">-->
-      <!--<p slot="header">新增用户</p>-->
-      <!--<p>新增用户使用form表单实现</p>-->
-    <!--</Modal>-->
-    <!-- 封装成组件 -->
-    <Modal
-      v-model="authModal"
-      title="Title"
-      :loading="loading">
-      <p slot="header">用户角色</p>
-      <p>编辑用户角色的窗口，使用穿梭框实现</p>
-    </Modal>
-    <!-- 封装成组件 -->
-    <create-user :add-user-modal="addUserModal" @on-complete="complete">
-
-    </create-user>
+    <!-- 新增用户modal -->
+    <createUser ref="createUser" :addUserModal="addUserModal" @refreshTable="getData"></createUser>
+    <!-- 编辑用户modal -->
+    <editUser ref="editUser"  @refreshTable="getData"></editUser>
+    <!-- 编辑用户角色modal -->
+    <editUserRole ref="editUserRole" :addUserModal="addUserModal" @refreshTable="getData"></editUserRole>
     <!-- 封装成组件 -->
     <Card>
       <p slot="title">
         <Icon type="ios-film-outline"></Icon>
         {{ $t('user-list') }}
       </p>
-      <Button @click="addUserModal = true" type="primary" slot="extra">{{ $t('add-user') }}</Button>
+      <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-user') }}</Button>
       <Table :columns="columns" :data="data" stripe :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
@@ -46,9 +32,13 @@
 <script>
 import { users } from '@/api/user'
 import createUser from './components/create_user.vue'
+import editUser from './components/edit-user-modal.vue'
+import editUserRole from './components/edit-user-role-modal.vue'
 export default {
   components: {
-      createUser
+    createUser,
+    editUser,
+    editUserRole
   },
   data () {
     return {
@@ -123,10 +113,10 @@ export default {
                   },
                   on: {
                     click: () => {
-                        this.authModal = true;
+                        this.openEditUserRoleForm(params.row.row)
                     }
                   }
-                },this.$t('auth')),
+                },this.$t('role')),
                 h('Button',{
                   props: {
                     type : 'info',
@@ -137,7 +127,7 @@ export default {
                   },
                   on: {
                       click: () => {
-                          this.infoModal = true;
+                          this.openEditUserForm(params.row.row)
                       }
                   }
               },this.$t('edit'))
@@ -182,6 +172,15 @@ export default {
     },
     complete (e) {
         this.addUserModal = e;
+    },
+    openCreateForm () {
+      this.$refs.createUser.open();
+    },
+    openEditUserForm () {
+      this.$refs.editUser.open();
+    },
+    openEditUserRoleForm () {
+      this.$refs.editUserRole.open();
     }
   },
   mounted: function () {

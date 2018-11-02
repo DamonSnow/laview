@@ -33,6 +33,7 @@ $api->version('v1', function($api) {
         $api->resource('permissions','App\Http\Controllers\Api\PermissionsController');
         $api->get('all_permissions','App\Http\Controllers\Api\PermissionsController@allPermissions');
         $api->resource('roles','App\Http\Controllers\Api\RoleController');
+        $api->resource('users','App\Http\Controllers\Api\UserController',['only'=>['store','update']]);
     });
 
 

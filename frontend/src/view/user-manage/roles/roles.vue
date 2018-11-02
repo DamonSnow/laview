@@ -1,35 +1,10 @@
 <template>
   <div>
-        <!-- 封装成组件 -->
-    <!--<Modal-->
-      <!--ref="addRoleModal"-->
-      <!--v-model="addModal"-->
-      <!--title="Title"-->
-      <!--:loading="loading"-->
-      <!--width="700"-->
-      <!--@on-ok="handleSubmit('roleForm')"-->
-      <!--@on-cancel="handleReset('roleForm')">-->
-      <!--<p slot="header">{{ $t('add-role') }}</p>-->
-        <!--<Form ref="roleForm" :model="role" :rules="ruleValidate" :label-width="80">-->
-            <!--<FormItem label="角色" prop="name">-->
-                <!--<Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>-->
-            <!--</FormItem>-->
-            <!--<FormItem label="权限" prop="permissions">-->
-                <!--<Transfer-->
-                    <!--:data="rights"-->
-                    <!--:target-keys="role.permissions"-->
-                    <!--:render-format="permission_rendor"-->
-                    <!--@on-change="handlePermission"></Transfer>-->
-            <!--</FormItem>-->
-            <!--<FormItem label="备注">-->
-                <!--<Input v-model="role.comment" placeholder="备注"></Input>-->
-            <!--</FormItem>-->
-        <!--</Form>-->
-    <!--</Modal>-->
-      <createRoleModal ref="createRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></createRoleModal>
-      <editRoleModal ref="editRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></editRoleModal>
+    <!-- 新增角色modal -->
+    <createRoleModal ref="createRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></createRoleModal>
+    <!-- 编辑角色modal -->
+    <editRoleModal ref="editRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></editRoleModal>
 
-        <!-- 封装成组件 -->
     <Card>
       <p slot="title">
         <Icon type="ios-film-outline"></Icon>
@@ -70,7 +45,7 @@
             width: 60,
             align: 'center',
             indexMethod: (row) => {
-                return (row._index + 1) + (this.size * this.current) - this.size;
+              return (row._index + 1) + (this.size * this.current) - this.size;
             }
           },
           {
@@ -83,15 +58,15 @@
             render: (h, params) => {
               console.log(params.row.permissions)
                 if(params.row.permissions.length > 0) {
-                    let cols = params.row.permissions.map(item => {
+                  let cols = params.row.permissions.map(item => {
 
-                        return h('Tag', {
-                            props: {
-                                color: 'success'
-                            }
-                        }, item.name);
-                    })
-                    return h('div', cols)
+                    return h('Tag', {
+                      props: {
+                        color: 'success'
+                      }
+                    }, item.name);
+                  })
+                  return h('div', cols)
                 }
 
             }
@@ -174,15 +149,15 @@
         })
       },
       getPermissions () {
-          allPermissions(this.current, this.size).then(res => {
-              this.rights = res.data.data.reduce(function (per, item, index) {
-                  per[index] = [];
-                  per[index]['key'] = item['id'];
-                  per[index]['label'] = item['name'];
-                  per[index]['disable'] = false;
-                  return per;
-              },[]);
-          })
+        allPermissions(this.current, this.size).then(res => {
+          this.rights = res.data.data.reduce(function (per, item, index) {
+            per[index] = [];
+            per[index]['key'] = item['id'];
+            per[index]['label'] = item['name'];
+            per[index]['disable'] = false;
+            return per;
+          },[]);
+        })
       },
       handleChangeSize (val) {
         this.size = val;
@@ -194,7 +169,7 @@
         this.$refs.createRole.open();
       },
       openEditForm (row) {
-          this.$refs.editRole.open(row);
+        this.$refs.editRole.open(row);
       }
     },
     mounted: function () {

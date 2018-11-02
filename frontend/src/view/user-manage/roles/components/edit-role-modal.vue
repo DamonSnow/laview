@@ -6,10 +6,10 @@
       title="Title"
       :loading="loading"
       width="700"
-      @on-ok="handleSubmit('editroleForm')"
-      @on-cancel="handleReset('editroleForm')">
-      <p slot="header">{{ $t('add-role') }}</p>
-      <Form ref="editroleForm" :model="role" :rules="ruleValidate" :label-width="80">
+      @on-ok="handleSubmit('editRoleForm')"
+      @on-cancel="handleReset('editRoleForm')">
+      <p slot="header">{{ $t('edit-role') }}</p>
+      <Form ref="editRoleForm" :model="role" :rules="ruleValidate" :label-width="80">
         <FormItem label="角色" prop="name">
           <Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>
         </FormItem>
@@ -73,7 +73,7 @@
             }).catch(function (error) {
               _this.showModal = true;
               _this.$Message.error(error.response.data.message);
-              _this.handleReset('editroleForm')
+              _this.handleReset('editRoleForm')
             })
 
           } else {

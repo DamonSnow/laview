@@ -14,7 +14,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends ApiController
 {
@@ -53,5 +55,37 @@ class UserController extends ApiController
     public function getInfo()
     {
         return $this->success(new UserResource(User::find(auth('api')->id())));
+    }
+
+    public function  store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email'    => 'required|exists:users,email',
+            'job_number' => 'required|exists:users',
+        ]);
+        if ($validator->fails()) {
+            return failed_response($validator->errors()->toArray(),'error',400);
+        }
+        DB::beginTransaction();
+        try {
+            $data = [
+                'name' => $request->name,
+                'avatar' => empty($request->avatar) ? 'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/ZqM7iaP4CR.png?imageView2/1/w/200/h/200': $request->avatar,
+                'email' => $request->email,
+                'job_number' => $request->job_number,
+                'phone' => $request->phone,
+                'password' => bcrypt(str_random(10)),
+                'remember_token' => str_random(16),
+                'active' => 1
+            ];
+            $user = User::create($data);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return $this->setStatusCode($code)->failed($msg);
+        }
+
     }
 }
