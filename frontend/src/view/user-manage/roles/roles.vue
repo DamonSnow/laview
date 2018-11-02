@@ -1,31 +1,33 @@
 <template>
   <div>
         <!-- 封装成组件 -->
-    <Modal
-      ref="addRoleModal"
-      v-model="addModal"
-      title="Title"
-      :loading="loading"
-      width="700"
-      @on-ok="handleSubmit('roleForm')"
-      @on-cancel="handleReset('roleForm')">
-      <p slot="header">{{ $t('add-role') }}</p>
-        <Form ref="roleForm" :model="role" :rules="ruleValidate" :label-width="80">
-            <FormItem label="角色" prop="name">
-                <Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>
-            </FormItem>
-            <FormItem label="权限" prop="permissions">
-                <Transfer
-                    :data="rights"
-                    :target-keys="role.permissions"
-                    :render-format="permission_rendor"
-                    @on-change="handlePermission"></Transfer>
-            </FormItem>
-            <FormItem label="备注">
-                <Input v-model="role.comment" placeholder="备注"></Input>
-            </FormItem>
-        </Form>
-    </Modal>
+    <!--<Modal-->
+      <!--ref="addRoleModal"-->
+      <!--v-model="addModal"-->
+      <!--title="Title"-->
+      <!--:loading="loading"-->
+      <!--width="700"-->
+      <!--@on-ok="handleSubmit('roleForm')"-->
+      <!--@on-cancel="handleReset('roleForm')">-->
+      <!--<p slot="header">{{ $t('add-role') }}</p>-->
+        <!--<Form ref="roleForm" :model="role" :rules="ruleValidate" :label-width="80">-->
+            <!--<FormItem label="角色" prop="name">-->
+                <!--<Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>-->
+            <!--</FormItem>-->
+            <!--<FormItem label="权限" prop="permissions">-->
+                <!--<Transfer-->
+                    <!--:data="rights"-->
+                    <!--:target-keys="role.permissions"-->
+                    <!--:render-format="permission_rendor"-->
+                    <!--@on-change="handlePermission"></Transfer>-->
+            <!--</FormItem>-->
+            <!--<FormItem label="备注">-->
+                <!--<Input v-model="role.comment" placeholder="备注"></Input>-->
+            <!--</FormItem>-->
+        <!--</Form>-->
+    <!--</Modal>-->
+      <createRoleModal ref="createRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></createRoleModal>
+      <editRoleModal ref="editRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></editRoleModal>
 
         <!-- 封装成组件 -->
     <Card>
@@ -33,7 +35,7 @@
         <Icon type="ios-film-outline"></Icon>
         {{ $t('permissions-list') }}
       </p>
-      <Button @click="addModal = true" type="primary" slot="extra">{{ $t('add-role') }}</Button>
+      <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-role') }}</Button>
       <Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>
 
       <div style="text-align: center;margin: 16px 0">
@@ -51,9 +53,15 @@
 </template>
 
 <script>
-  import { roles, addRole } from '@/api/roles'
+  import { roles, addRole, deleteRole } from '@/api/roles'
   import { allPermissions } from '@/api/permissions'
+  import createRoleModal from './components/create-role-modal.vue'
+  import editRoleModal from './components/edit-role-modal.vue'
   export default {
+    components: {
+      createRoleModal,
+      editRoleModal
+    },
     data () {
       return {
         columns: [
@@ -68,6 +76,25 @@
           {
             title: '角色',
             key: 'name',
+          },
+          {
+            title: '权限',
+            key: 'permissions',
+            render: (h, params) => {
+              console.log(params.row.permissions)
+                if(params.row.permissions.length > 0) {
+                    let cols = params.row.permissions.map(item => {
+
+                        return h('Tag', {
+                            props: {
+                                color: 'success'
+                            }
+                        }, item.name);
+                    })
+                    return h('div', cols)
+                }
+
+            }
           },
           {
             title: '备注',
@@ -85,24 +112,40 @@
                   },
                   on: {
                     click: () => {
-                        this.$Message.info('编辑role');
+                      this.openEditForm(params.row)//打开编辑页
                     }
                   }
                 },this.$t('edit')),
-                h('Button',{
+                h('Poptip',{
                   props: {
-                    type : 'error',
-                    size: 'small'
+                    confirm: true,
+                    title: '确认要删除该权限吗?'
                   },
                   style: {
                     margin: '0 0 0 5px'
                   },
                   on: {
-                    click: () => {
-                        this.$Message.info('删除role');
+                    'on-ok': () => {
+                      let _this = this;
+                      deleteRole(params.row.id).then(res => {
+                        this.$Message.success('删除role成功');
+                        if(parseInt(params.row._index) === 0 && this.current !== 1) {
+                          this.current --;
+                        }
+                        this.getData();
+                      }).catch(function (error) {
+                        _this.$Message.error(error.response.data.message);
+                      })
                     }
                   }
-                },this.$t('delete'))
+                },[
+                  h('Button',{
+                    props: {
+                      type : 'error',
+                      size: 'small'
+                    },
+                  },this.$t('delete'))
+                ],this.$t('delete'))
               ]);
             },
           }
@@ -114,19 +157,6 @@
         size: 10,
         addModal: false,
         rights: [],
-        role: {
-            name: '',
-            permissions: [],
-            comment: ''
-        },
-        ruleValidate: {
-          name: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-          ],
-          permissions: [
-            { required: true, type: 'array', min: 1, message: 'Choose at least one hobby', trigger: 'change' },
-          ],
-        },
 
       }
     },
@@ -137,7 +167,7 @@
         this.loading = true
 
         roles(this.current, this.size).then(res => {
-
+          console.log(res.data)
           this.data = res.data.data;
           this.total = res.data.meta.total;
           this.loading = false;
@@ -160,43 +190,12 @@
           this.getData();
         })
       },
-      handleSubmit (name) {
-          let _this = this;
-          _this.addModal = false;
-            this.$refs[name].validate((valid) => {
-                if (valid) {
-                    addRole(_this.role.name, _this.role.permissions, _this.role.comment).then(res => {
-                        if(parseInt(res.data.code) === 200) {
-                            this.$Message.success('新增权限成功');
-                            this.getData();
-                            _this.addModal = false;
-                        } else {
-                            this.$Message.error(res.data.message);
-                            this.addModal =true;
-                        }
-                    }).catch(function (error) {
-                        _this.addModal =true;
-                        _this.$Message.error(error.response.data.message);
-                        _this.handleReset('permissionForm')
-                    })
-
-                } else {
-                    //防止验证失败关闭model，需要将model的visible置为true
-                    _this.$refs.addRoleModal.visible = true;
-                    _this.addModal = true;
-                }
-            })
+      openCreateForm () {
+        this.$refs.createRole.open();
       },
-      handleReset (name) {
-            this.$refs[name].resetFields();
-      },
-      handlePermission (newTargetKeys, direction, moveKeys) {
-
-          this.role.permissions = newTargetKeys;
-      },
-      permission_rendor (item) {
-        return item.label;
-      },
+      openEditForm (row) {
+          this.$refs.editRole.open(row);
+      }
     },
     mounted: function () {
       this.getData();

@@ -60,14 +60,14 @@ class PermissionsController extends ApiController
 
     public function update($id, Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return failed_response($validator->errors()->toArray(), 'error', 1001);
+        }
+        DB::beginTransaction();
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required',
-            ]);
-            if ($validator->fails()) {
-                return failed_response($validator->errors()->toArray(), 'error', 1001);
-            }
-            DB::beginTransaction();
             $permission = Permission::find($id);
             if($permission->name != $request->input('name')) $permission->name = $request->input('name');
             if($permission->comment != $request->input('comment')) $permission->comment = $request->input('comment');
@@ -83,10 +83,22 @@ class PermissionsController extends ApiController
 
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
-        $permission = Permission::find($id);
-        $permission->delete();
-        return $this->success('delete success','success');
+        DB::beginTransaction();
+        try {
+            $permission = Permission::findOrFail($id);
+            if ($permission->name == 'super_admin') {
+                throw new \Exception('超级管理员权限无法删除！',400);
+            }
+            $permission->delete();
+            DB::commit();
+            return $this->success('delete success','success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return failed_response($msg,'error',$code);
+        }
     }
 }

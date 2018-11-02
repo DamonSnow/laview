@@ -66,14 +66,12 @@
 //            _this.showAddModel = false;
 //            _this.$emit('showModel',false)
             },
-            open (id) {
+            open (row) {
                 let _this = this;
-                _this.permissionId = id;
-                getPermission(id).then(res => {
-                    _this.permission.name = res.data.data.name;
-                    _this.permission.comment = res.data.data.comment;
-                    _this.showModal = true;
-                })
+                _this.permissionId = row.id;
+                _this.permission.name = row.name;
+                _this.permission.comment = row.comment;
+                _this.showModal = true;
             }
         }
 

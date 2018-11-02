@@ -18,7 +18,7 @@ class Role extends Model implements RoleContract
     use HasPermissions;
     use RefreshesPermissionCache;
 
-    protected $fillable = ['name', 'guard_name', 'description'];
+    protected $fillable = ['name', 'guard_name', 'comment'];
 
     public function __construct(array $attributes = [])
     {

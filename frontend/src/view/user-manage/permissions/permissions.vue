@@ -1,26 +1,10 @@
 <template>
   <div>
-        <!-- 封装成组件 -->
-    <!--<Modal-->
-      <!--ref="addPermissionModal"-->
-      <!--v-model="addModal"-->
-      <!--title="Title"-->
-      <!--:loading="loading"-->
-      <!--@on-ok="handleSubmit('permissionForm')"-->
-      <!--@on-cancel="handleReset('permissionForm')">-->
-      <!--<p slot="header">新增权限</p>-->
-        <!--<Form ref="permissionForm" :model="permission" :rules="ruleValidate" :label-width="80">-->
-            <!--<FormItem label="权限" prop="name">-->
-                <!--<Input v-model="permission.name" :placeholder='$t("Enter Permission name")'></Input>-->
-            <!--</FormItem>-->
-            <!--<FormItem label="备注">-->
-                <!--<Input v-model="permission.comment"></Input>-->
-            <!--</FormItem>-->
-        <!--</Form>-->
-    <!--</Modal>-->
+    <!-- 新增权限的model -->
     <createModel ref="createPermission" :addModal="addModal" @refreshTable="getData"></createModel>
+    <!-- 编辑权限的model -->
     <editModel ref="editPermission" :addModal="addModal" @refreshTable="getData"></editModel>
-        <!-- 封装成组件 -->
+
     <Card>
       <p slot="title">
         <Icon type="ios-film-outline"></Icon>
@@ -44,7 +28,7 @@
 </template>
 
 <script>
-  import { permissions, addPermission } from '@/api/permissions'
+  import { permissions, addPermission, deletePermission } from '@/api/permissions'
   import createModel from './components/create_form.vue'
   import editModel from './components/edit-form.vue'
   export default {
@@ -60,7 +44,7 @@
             width: 60,
             align: 'center',
             indexMethod: (row) => {
-                return (row._index + 1) + (this.size * this.current) - this.size;
+              return (row._index + 1) + (this.size * this.current) - this.size;
             }
           },
           {
@@ -83,7 +67,7 @@
                   },
                   on: {
                     click: () => {
-                      this.openEditForm(params.row.id)//打开编辑页
+                      this.openEditForm(params.row)//打开编辑页
                     }
                   }
                 },this.$t('edit')),
@@ -97,16 +81,25 @@
                   },
                   on: {
                     'on-ok': () => {
-                      this.$Message.info('删除role');
+                      let _this = this;
+                      deletePermission(params.row.id).then(res => {
+                        this.$Message.success('删除权限成功');
+                        if(parseInt(params.row._index) === 0 && this.current !== 1) {
+                          this.current --;
+                        }
+                        this.getData();
+                      }).catch(function (error) {
+                          _this.$Message.error(error.response.data.message);
+                      })
                     }
                   }
                 },[
-                    h('Button',{
-                        props: {
-                            type : 'error',
-                            size: 'small'
-                        },
-                    },this.$t('delete'))
+                  h('Button',{
+                    props: {
+                        type : 'error',
+                        size: 'small'
+                    },
+                  },this.$t('delete'))
                 ],this.$t('delete'))
               ]);
             },
@@ -120,8 +113,8 @@
         addModal: false,
         sortType: 'normal', //normal asc desc
         permission: {
-            name: '',
-            comment: ''
+          name: '',
+          comment: ''
         },
         ruleValidate: {
           name: [
@@ -145,6 +138,7 @@
       },
       handleChangeSize (val) {
         this.size = val;
+        this.current = 1;
         this.$nextTick(() => {
           this.getData();
         })
@@ -152,40 +146,9 @@
       openCreateForm (val) {
         this.$refs.createPermission.open();
       },
-      openEditForm (id) {
-          this.$refs.editPermission.open(id);
+      openEditForm (row) {
+          this.$refs.editPermission.open(row);
       },
-//      handleSubmit (name) {
-//          let _this = this;
-//          _this.addModal = false;
-//            this.$refs[name].validate((valid) => {
-//
-//                if (valid) {
-//                    addPermission(this.permission.name, this.permission.comment).then(res => {
-//                        console.log(res.data)
-//                        if(parseInt(res.data.code) === 200) {
-//                            this.$Message.success('新增权限成功');
-//                            this.getData();
-//                            _this.addModal = false;
-//                        } else {
-//                            this.$Message.error(res.data.message);
-//                            this.addModal =true;
-//                        }
-//                    }).catch(function (error) {
-//                        _this.addModal =true;
-//                        _this.$Message.error(error.response.data.message);
-//                        _this.handleReset('permissionForm')
-//                    })
-//
-//                } else {
-//                    _this.$refs.addPermissionModal.visible = true;
-//                    _this.addModal = true;
-//                }
-//            })
-//      },
-//      handleReset (name) {
-//            this.$refs[name].resetFields();
-//      }
     },
     mounted: function () {
       this.getData()
