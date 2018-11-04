@@ -5,7 +5,7 @@
     <!-- 编辑用户modal -->
     <editUser ref="editUser"  @refreshTable="getData"></editUser>
     <!-- 编辑用户角色modal -->
-    <editUserRole ref="editUserRole" :addUserModal="addUserModal" @refreshTable="getData"></editUserRole>
+    <editUserRole ref="editUserRole" :allRoles="allRoles" :addUserModal="addUserModal" @refreshTable="getData"></editUserRole>
     <!-- 封装成组件 -->
     <Card>
       <p slot="title">
@@ -31,6 +31,7 @@
 
 <script>
 import { users } from '@/api/user'
+import { allRoles } from '@/api/roles'
 import createUser from './components/create_user.vue'
 import editUser from './components/edit-user-modal.vue'
 import editUserRole from './components/edit-user-role-modal.vue'
@@ -53,6 +54,7 @@ export default {
         },
         {
           title: '工号',
+          align: 'center',
           key: 'job_number',
           sortable: 'custom',
           width: 100
@@ -60,6 +62,7 @@ export default {
         {
           title: '名称',
           key: 'name',
+          align: 'center',
           render: (h, params) => {
 
             return h('div',[
@@ -75,6 +78,7 @@ export default {
         {
           title: 'Active',
           key: 'active',
+          align: 'center',
           width: 100,
           render: (h, params) => {
             let color = '';
@@ -88,21 +92,42 @@ export default {
             }
             return h('Tag',{
               props: {
-                  color: color
+                color: color
               }
             },text);
           },
         },
         {
+          title: '角色',
+          key: 'roles',
+          align: 'center',
+          render: (h, params) => {
+            if(params.row.roles.length > 0) {
+              let cols = params.row.roles.map(item => {
+                return h('Tag', {
+                  props: {
+                    color: 'success'
+                  }
+                }, item);
+              })
+              return h('div', cols)
+            }
+
+          }
+        },
+        {
           title: '邮箱',
+          align: 'center',
           key: 'email'
         },
         {
           title: '手机',
+          align: 'center',
           key: 'phone'
         },
         {
             title: '操作',
+            align: 'center',
             key: 'user_id',
             render: (h, params) => {
               return h('div',[
@@ -113,7 +138,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                        this.openEditUserRoleForm(params.row.row)
+                      this.openEditUserRoleForm(params.row)
                     }
                   }
                 },this.$t('role')),
@@ -126,9 +151,9 @@ export default {
                     margin: '0 0 0 5px'
                   },
                   on: {
-                      click: () => {
-                          this.openEditUserForm(params.row.row)
-                      }
+                    click: () => {
+                      this.openEditUserForm(params.row)
+                    }
                   }
               },this.$t('edit'))
               ]);
@@ -136,6 +161,7 @@ export default {
         }
       ],
       data: [],
+      allRoles: [],
       loading: false,
       total: 0,
       current: 1,
@@ -153,7 +179,7 @@ export default {
       this.loading = true
 
       users(this.current, this.size, this.sortType).then(res => {
-        console.log(res.data)
+
         this.data = res.data.data;
         this.total = res.data.meta.total;
         this.loading = false;
@@ -176,15 +202,27 @@ export default {
     openCreateForm () {
       this.$refs.createUser.open();
     },
-    openEditUserForm () {
-      this.$refs.editUser.open();
+    openEditUserForm (row) {
+      this.$refs.editUser.open(row);
     },
-    openEditUserRoleForm () {
-      this.$refs.editUserRole.open();
+    openEditUserRoleForm (row) {
+      this.$refs.editUserRole.open(row);
     }
   },
   mounted: function () {
+
     this.getData()
+    //获取所有角色
+    allRoles().then(res => {
+        let index = 0;
+        for (let i in res.data.data) {
+            this.allRoles[index] = [];
+            this.allRoles[index]['key'] = res.data.data[i];
+            this.allRoles[index]['label'] = res.data.data[i];
+            this.allRoles[index]['disable'] = false;
+            index++;
+        }
+    })
   }
 }
 </script>

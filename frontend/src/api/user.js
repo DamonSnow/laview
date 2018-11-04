@@ -60,3 +60,23 @@ export const addUser = (user) => {
         method: 'post'
     })
 }
+
+export const updateUser = (id, user) => {
+    const data = Object.assign({},user);
+    return axios.request({
+        url: `users/${id}`,
+        data,
+        method: 'put'
+    })
+}
+
+export const updateUserRole = (id, tagetRoles) => {
+    const data = {
+        tagetRoles
+    };
+    return axios.request({
+        url: `update_user_role/${id}`,
+        data,
+        method: 'post'
+    })
+}

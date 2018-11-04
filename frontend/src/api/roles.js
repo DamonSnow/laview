@@ -31,6 +31,13 @@ export const getRole = (id) => {
   })
 }
 
+export const allRoles = () => {
+  return axios.request({
+    url: `all_roles`,
+    method: 'get'
+  })
+}
+
 export const updateRole = (id, name, permissions, comment) => {
   let data = {
     name,

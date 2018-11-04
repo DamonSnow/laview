@@ -156,7 +156,7 @@
             per[index]['label'] = item['name'];
             per[index]['disable'] = false;
             return per;
-          },[]);
+          },[]);console.log(this.rights)
         })
       },
       handleChangeSize (val) {

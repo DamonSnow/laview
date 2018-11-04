@@ -8,6 +8,7 @@
       @on-ok="handleSubmit('userForm')"
       @on-cancel="handleReset('userForm')">
       <p slot="header">新增用户</p>
+      <Alert type="error" v-if="errorMsg">{{ errorMsg }}</Alert>
       <Form ref="userForm" :model="user" :rules="ruleValidate" :label-width="80">
         <FormItem label="姓名" prop="name">
           <Input v-model="user.name" :placeholder='$t("Enter User name")'></Input>
@@ -37,6 +38,7 @@
         },
         data () {
             return {
+                errorMsg: '',
                 showModal: this.addUserModal,
                 loading: false,
                 user: {
@@ -64,17 +66,29 @@
         methods: {
             handleSubmit (name) {
                 let _this=this;
-
+                _this.errorMsg = '';
                 this.$refs[name].validate((valid) => {
 
 
                     this.$refs[name].validate((valid) => {
                         if (valid) {
                            addUser(_this.user).then(res => {
-                               console.log(res.data)
+                               if(parseInt(res.data.code) === 200) {
+                                   this.$Message.success('新增用户成功');
+                                   _this.$emit('refreshTable',false)
+                                   _this.showModal = false;
+                               } else {
+                                   this.$Message.error(res.data.message);
+                                   _this.showModal = true;
+                               }
                            }).catch(function (error) {
+                               _this.$refs.createUserModal.visible = true;
                                _this.showModal =true;
-                               _this.$Message.error(error.response.data.message);
+                               let message = '';
+                               for (let i in error.response.data.message) {
+                                   message = message + error.response.data.message[i];
+                               }
+                               _this.errorMsg = message;
 //                               _this.handleReset('userForm')
                            })
                         } else {
@@ -86,7 +100,9 @@
 
             },
             handleReset (name) {
+                this.errorMsg = '';
                 this.$refs[name].resetFields();
+                this.user.phone = '';
 //            _this.showAddModel = false;
 //            _this.$emit('showModel',false)
             },
