@@ -23,7 +23,7 @@ class UserController extends ApiController
     public function __construct()
     {
         $this->middleware(['auth:api','cors'])->only([
-            'getInfo'
+            'getInfo', 'updateUserRole'
         ]);
     }
 
@@ -60,17 +60,18 @@ class UserController extends ApiController
     public function  store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email'    => 'required|exists:users,email',
-            'job_number' => 'required|exists:users',
+            'email'    => 'required|unique:users',
+            'job_number' => 'required|unique:users',
         ]);
         if ($validator->fails()) {
             return failed_response($validator->errors()->toArray(),'error',400);
         }
         DB::beginTransaction();
+        $avatar = empty($request->avatar) ? 'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/ZqM7iaP4CR.png?imageView2/1/w/200/h/200': $request->avatar;
         try {
             $data = [
                 'name' => $request->name,
-                'avatar' => empty($request->avatar) ? 'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/ZqM7iaP4CR.png?imageView2/1/w/200/h/200': $request->avatar,
+                'avatar' => $avatar,
                 'email' => $request->email,
                 'job_number' => $request->job_number,
                 'phone' => $request->phone,
@@ -80,6 +81,7 @@ class UserController extends ApiController
             ];
             $user = User::create($data);
             DB::commit();
+            return $this->success('新增用户成功','success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
@@ -87,5 +89,49 @@ class UserController extends ApiController
             return $this->setStatusCode($code)->failed($msg);
         }
 
+    }
+
+    public function update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return failed_response($validator->errors()->toArray(), 'error', 1001);
+        }
+        DB::beginTransaction();
+        try {
+            $user = User::find($id);
+            $user->update($request->all());
+            DB::commit();
+            return $this->success('update','success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return $this->setStatusCode($code)->failed($msg);
+        }
+    }
+
+    public function updateUserRole($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tagetRoles' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return failed_response($validator->errors()->toArray(), 'error', 1001);
+        }
+        DB::beginTransaction();
+        try {
+            $user = User::find($id);
+            $user->syncRoles($request->input('tagetRoles'));
+            DB::commit();
+            return $this->success('update','success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return $this->setStatusCode($code)->failed($msg);
+        }
     }
 }

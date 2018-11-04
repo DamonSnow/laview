@@ -103,4 +103,11 @@ class RoleController extends ApiController
             return $this->setStatusCode($code)->failed($msg);
         }
     }
+
+    public function allRoles()
+    {
+        $roles = Role::all()->pluck('name','id')->toArray();
+        return $this->success($roles,'success');
+    }
+
 }

@@ -24,6 +24,7 @@ class User extends JsonResource
             'job_number' => $this->job_number,
             'active' => $this->active,
             'created_at' => $this->created_at,
+            'roles' => $this->when($request->route()->getName() == 'users',$this->roles->pluck('name')),
             'access' => $this->when($request->route()->getName() == 'get_info',$this->permissions->pluck('name'))
         ];
     }
