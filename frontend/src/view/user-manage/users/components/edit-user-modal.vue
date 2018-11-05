@@ -14,7 +14,36 @@
           <Input v-model="user.name" :placeholder='$t("Enter User name")'></Input>
         </FormItem>
         <FormItem label="头像">
-          <Input v-model="user.avatar"></Input>
+          <Row>
+            <Col span="6">
+            <Upload
+                    :show-upload-list="false"
+                    :on-success="uploadSuccess"
+                    :on-format-error="handleFormatError"
+                    :on-exceeded-size="handleMaxSize"
+                    :headers="uploadConfig.headers"
+                    :max-size="uploadConfig.max_size"
+                    :format="uploadConfig.format"
+                    name="avatar"
+                    type="drag"
+                    :action="uploadConfig.uploadUrl"
+                    style="display: inline-block;width:58px;">
+              <div style="width: 58px;height:58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+              </div>
+            </Upload>
+            </Col>
+            <Col span="6">
+            <div style="height:58px;padding: 10px">
+              <Avatar
+                      icon="ios-person"
+                      :src="user.avatar"
+                      size="large"
+              />
+            </div>
+            </Col>
+          </Row>
+
         </FormItem>
         <FormItem label="手机号">
           <Input v-model="user.phone"></Input>
@@ -31,6 +60,9 @@
 </template>
 <script>
   import { updateUser } from '@/api/user'
+  import config from '@/config'
+  import Cookies from 'js-cookie'
+  import { TOKEN_KEY } from '@/libs/util'
   export default {
     name: 'edit-user-modal',
     props : {
@@ -41,6 +73,15 @@
         errorMsg: '',
         showModal: this.addUserModal,
         loading: false,
+        uploadConfig: {
+          headers : {
+              'x-access-token': Cookies.get(TOKEN_KEY),
+              'Authorization': 'Bearer ' + Cookies.get(TOKEN_KEY),
+          },
+          format: ['jpg', 'jpeg', 'png'],
+          max_size: 500,
+          uploadUrl: config.baseUrl.pro + '/uploadAvatar',
+        },
         userId: 0,
         user: {
           name: '',
@@ -100,7 +141,24 @@
         this.user.phone = row.phone;
         this.user.active = row.active;
         this.showModal = true;
-      }
+      },
+      uploadSuccess (res, file) {
+        file.name = res.data.file_name;
+        file.url = res.data.path;
+        this.user.avatar = res.data.path;
+      },
+      handleFormatError(file) {
+          this.$Notice.warning({
+              title: '文件格式不正确',
+              desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
+          });
+      },
+      handleMaxSize(file) {
+          this.$Notice.warning({
+              title: '超出文件大小限制',
+              desc: '文件 ' + file.name + ' 太大，不能超过 ' + this.uploadConfig.max_size + 'kb'
+          });
+      },
     },
   }
 </script>

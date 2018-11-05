@@ -9,6 +9,7 @@
         "barryvdh/laravel-cors": "^0.11.0",
         "dingo/api": "2.0.0-alpha2",
         "fideloper/proxy": "^4.0",
+        "intervention/image": "^2.4",
         "laravel/framework": "5.6.*",
         "laravel/passport": "^6.0",
         "laravel/tinker": "^1.0",

@@ -8,7 +8,7 @@
 
 namespace App\Handlers;
 
-use Image;
+use Intervention\Image\Facades\Image;
 
 class ImageUploadHandler
 {
@@ -19,7 +19,7 @@ class ImageUploadHandler
     {
         //构建存储的文件夹规则，值如：uploads/images/avatars/201807/11
         //文件夹切割能让查看效率更高
-        $folder_name = 'uploads/images/' . $folder . '/' . date('Ym/d', time());
+        $folder_name = 'storage/uploads/images/' . $folder . '/' . date('Ym/d', time());
 
         //文件具体存储的物理路径，`public_path()`获取的是`public`文件夹的物理路径
         $upload_path = public_path() . '/' . $folder_name;
@@ -47,7 +47,8 @@ class ImageUploadHandler
         }
 
         return [
-            'path' => config('app.url') . "/$folder_name/$filename"
+            'path' => config('app.url') . "/$folder_name/$filename",
+            'file_name' => $filename
         ];
     }
 

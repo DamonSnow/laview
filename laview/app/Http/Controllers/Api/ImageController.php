@@ -13,11 +13,10 @@ class ImageController extends ApiController
     {
         $user = auth('api')->id();
         $result = $uploader->save(Input::file('avatar'),'avatars',$user, 362);
-        
-        return $this->success($result, 'success');
-//        if($result) {
-////            $data['avatar'] = $result['path'];
-//
-//        }
+
+        if($result) {
+//            $data['avatar'] = $result['path'];
+            return $this->success($result, 'success');
+        }
     }
 }
