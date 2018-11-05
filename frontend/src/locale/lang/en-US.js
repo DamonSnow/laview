@@ -21,9 +21,12 @@ export default {
   update_paste_page: 'Paste Table Data',
   multilevel: 'multilevel',
   directive_page: 'Directive',
-  level_1: 'level-1',
-  level_2: 'level-2',
-  level_2_1: 'level-2-1',
+  level_1: 'Level-1',
+  level_2: 'Level-2',
+  level_2_1: 'Level-2-1',
+  level_2_3: 'Level-2-3',
+  level_2_2: 'Level-2-2',
+  level_2_2_1: 'Level-2-2-1',
   excel: 'Excel',
   'upload-excel': 'Upload Excel',
   'export-excel': 'Export Excel',
@@ -33,5 +36,9 @@ export default {
   modalTitle: 'Modal Title',
   content: 'This is the modal box content.',
   buttonText: 'Show Modal',
-  'i18n-tip': 'Note: Only this page is multi-language, other pages do not add language content to the multi-language package.'
+  'i18n-tip': 'Note: Only this page is multi-language, other pages do not add language content to the multi-language package.',
+  error_store_page: 'Error Collection',
+  error_logger_page: 'Error Logger',
+  query: 'Query',
+  params: 'Params'
 }

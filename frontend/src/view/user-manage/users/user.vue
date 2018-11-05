@@ -35,6 +35,7 @@ import { allRoles } from '@/api/roles'
 import createUser from './components/create_user.vue'
 import editUser from './components/edit-user-modal.vue'
 import editUserRole from './components/edit-user-role-modal.vue'
+import defAvatar from '@/assets/images/avatars/avatar.png'
 export default {
   components: {
     createUser,
@@ -68,7 +69,8 @@ export default {
             return h('div',[
               h('Avatar', {
                 props: {
-                  src : params.row.avatar
+                  src : params.row.avatar ? params.row.avatar : defAvatar,
+                  icon: 'ios-person'
                 }
               }),
               h('span',params.row.name)

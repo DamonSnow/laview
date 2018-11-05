@@ -14,7 +14,31 @@
           <Input v-model="user.name" :placeholder='$t("Enter User name")'></Input>
         </FormItem>
         <FormItem label="头像">
-          <Input v-model="user.avatar"></Input>
+          <div>
+            <Avatar
+                  icon="ios-person"
+                  :src="user.avatar"
+                  />
+            <Upload
+                    :show-upload-list="false"
+                    :on-success="uploadSuccess"
+
+                    :headers="uploadConfig.headers"
+
+                    name="avatar"
+
+                    :action="uploadConfig.uploadUrl"
+                    style="display: inline-block;width:58px;"
+            >
+              <Button icon="ios-cloud-upload-outline">Upload files</Button>
+            </Upload>
+            <!--<Upload :action="uploadUrl"-->
+                    <!--:headers="headers"-->
+                    <!--:on-success="uploadSuccess"-->
+                    <!--:before-upload="handleBeforeUpload">-->
+              <!---->
+            <!--</Upload>-->
+          </div>
         </FormItem>
         <FormItem label="E-mail" prop="email">
           <Input v-model="user.email"></Input>
@@ -31,6 +55,9 @@
 </template>
 <script>
     import { addUser } from '@/api/user'
+    import config from '@/config'
+    import Cookies from 'js-cookie'
+    import { TOKEN_KEY } from '@/libs/util'
     export default {
         name: 'add-user-modal',
         props : {
@@ -41,6 +68,16 @@
                 errorMsg: '',
                 showModal: this.addUserModal,
                 loading: false,
+                uploadConfig: {
+                    headers : {
+                        'x-access-token': Cookies.get(TOKEN_KEY),
+                        'Authorization': 'Bearer ' + Cookies.get(TOKEN_KEY),
+                    },
+                    format: ['jpg', 'jpeg', 'png'],
+                    max_size: 500,
+                    uploadUrl: config.baseUrl.pro + '/uploadAvatar',
+                },
+
                 user: {
                     name: '',
                     avatar: '',
@@ -108,6 +145,15 @@
             },
             open () {
                 this.showModal = true;
+            },
+            uploadSuccess (res, file) {
+                console.log(res)
+                file.name = res.data.name;
+                file.url = res.data.url;
+                this.user.avatar = res.data.url;
+            },
+            handleBeforeUpload (file) {
+                console.log(file)
             }
         },
     }

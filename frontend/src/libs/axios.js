@@ -5,6 +5,16 @@ import store from '@/store'
 import router from '@/router/routers'
 import { refreshToken } from '@/api/user'
 // import { Spin } from 'iview'
+const addErrorLog = errorInfo => {
+  const { statusText, status, request: { responseURL } } = errorInfo
+  let info = {
+    type: 'ajax',
+    code: status,
+    mes: statusText,
+    url: responseURL
+  }
+  if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
+}
 window.isRefreshing = false
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -74,6 +84,7 @@ class HttpRequest {
         });
       }
       this.destroy(url)
+      addErrorLog(error.response)
       return Promise.reject(error)
     })
   }

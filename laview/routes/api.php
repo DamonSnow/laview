@@ -28,14 +28,19 @@ $api->version('v1', function($api) {
     });
     $api->group(['middleware'=>['auth:api','cors']],function($api){
         $api->post('logout','App\Http\Controllers\Api\AuthenticateController@logout');
+        //用户相关
         $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
         $api->get('users','App\Http\Controllers\Api\UserController@users')->name('users');
-        $api->resource('permissions','App\Http\Controllers\Api\PermissionsController');
-        $api->get('all_permissions','App\Http\Controllers\Api\PermissionsController@allPermissions');
-        $api->resource('roles','App\Http\Controllers\Api\RoleController');
-        $api->get('all_roles','App\Http\Controllers\Api\RoleController@allRoles');
         $api->resource('users','App\Http\Controllers\Api\UserController',['only'=>['store','update']]);
         $api->post('update_user_role/{id}','App\Http\Controllers\Api\UserController@updateUserRole');
+        $api->post('uploadAvatar','App\Http\Controllers\Api\ImageController@uploadAvatar');
+        //权限相关
+        $api->resource('permissions','App\Http\Controllers\Api\PermissionsController');
+        $api->get('all_permissions','App\Http\Controllers\Api\PermissionsController@allPermissions');
+        //角色相关
+        $api->resource('roles','App\Http\Controllers\Api\RoleController');
+        $api->get('all_roles','App\Http\Controllers\Api\RoleController@allRoles');
+
     });
 
 
