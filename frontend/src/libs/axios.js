@@ -2,7 +2,7 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 import { TOKEN_KEY, isTokenExpired, REFRESH_TOKEN_KEY } from '@/libs/util'
 import store from '@/store'
-import router from '@/router/routers'
+import router from 'vue-router'
 import { refreshToken } from '@/api/user'
 // import { Spin } from 'iview'
 const addErrorLog = errorInfo => {
@@ -45,7 +45,7 @@ class HttpRequest {
       }
       if(Cookies.get(TOKEN_KEY)) {
         if(isTokenExpired() && config.url.indexOf('refresh') === -1) {
-          console.log(window.isRefreshing);
+
           if(!window.isRefreshing) {
             window.isRefreshing = true;
             store.dispatch('refreshToken').then(function () {
@@ -70,7 +70,6 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)
-        console.log(res)
       const { data, status } = res
       return { data, status }
     }, error => {
@@ -78,9 +77,9 @@ class HttpRequest {
         // refreshToken(Cookies.get(REFRESH_TOKEN_KEY)).then(response => {
         //   setToken(response.)
         // })
+
         router.replace({ //跳转到登录页面
           path: 'login',
-          query: { redirect: router.currentRoute.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
         });
       }
       this.destroy(url)
