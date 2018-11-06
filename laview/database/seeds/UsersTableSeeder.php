@@ -12,34 +12,36 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        // 获取 Faker 实例
-        $faker = app(Faker\Generator::class);
+        // create a user.
+        User::truncate();
+        $user = User::create([
+            'name' => 'Damon Snow',
+            'avatar' => '',
+            'email' => 'hqfdotcom@gmail.com',
+            'job_number' => '00000',
+            'phone' => '12345678901',
+            'active' => 1,
+            'password' => bcrypt('123456'),
+            'remember_token'     => str_random(16),
+        ]);
 
-        // 头像假数据
-        $avatars = [
-            'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/s5ehp11z6s.png?imageView2/1/w/200/h/200',
-            'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/Lhd1SHqu86.png?imageView2/1/w/200/h/200',
-            'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/LOnMrqbHJn.png?imageView2/1/w/200/h/200',
-            'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/xAuDMxteQy.png?imageView2/1/w/200/h/200',
-            'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/ZqM7iaP4CR.png?imageView2/1/w/200/h/200',
-            'https://fsdhubcdn.phphub.org/uploads/images/201710/14/1/NDnzMutoxX.png?imageView2/1/w/200/h/200',
-        ];
+        // create a role.
+        $role = \Spatie\Permission\Models\Role::create([
+            'name' => 'super_admin',
+            'guard_name' => 'api',
+            'comment' => 'Super admin',
+        ]);
 
-        // 生成数据集合
-        $users = factory(User::class)
-            ->times(55)
-            ->make()
-            ->each(function ($user, $index)
-            use ($faker, $avatars)
-            {
-                // 从头像数组中随机取出一个并赋值
-                $user->avatar = $faker->randomElement($avatars);
-            });
+        //create a permission
+        $permission = \Spatie\Permission\Models\Permission::create([
+            'name' => 'super_admin',
+            'guard_name' => 'api',
+            'comment' => 'Super admin',
+        ]);
 
-        // 让隐藏字段可见，并将数据集合转换为数组
-        $user_array = $users->makeVisible(['password', 'remember_token'])->toArray();
+        // assign role and permission.
+        $role->givePermissionTo($permission);
+        $user->assignRole($role);
 
-        // 插入到数据库中
-        User::insert($user_array);
     }
 }

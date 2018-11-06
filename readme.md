@@ -51,7 +51,7 @@ php artisan migrate
 php artisan passport:keys
 php artisan db:seed //generate the original user data
 ```
-you can go to db , you will know the client secret and personal secret, copy this to you `.env` file.(I don't complete the seed data in this version, so you have to create a user and give him `super_admin` permission).
+you can go to db , you will know the client secret and personal secret, copy this to you `.env` file.
 
 # Others
 `Laview` based on following plugins or services:
