@@ -49,6 +49,15 @@ class UserController extends ApiController
         } else {
             $user = new User();
         }
+        $search_data = json_decode(Input::get('search_data'), true);
+        $email = isset_and_not_empty($search_data, 'email');
+        if ($email) {
+            $user = $user->where('email', 'like', $email . '%');
+        }
+        $jobNumber = isset_and_not_empty($search_data, 'job_number');
+        if ($jobNumber) {
+            $user = $user->where('job_number', 'like', $jobNumber . '%');
+        }
         return UserResource::collection($user->paginate(Input::get('size') ?: 20));
     }
 

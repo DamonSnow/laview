@@ -13,7 +13,20 @@
         {{ $t('user-list') }}
       </p>
       <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-user') }}</Button>
-      <Table :columns="columns" :data="data" stripe :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
+      <Row type="flex" justify="end" class="code-row-bg" :gutter="16">
+        <Col span="3">
+          <Input icon="search" placeholder="请输入工号搜索..." v-model="search.job_number"/>
+        </Col>
+        <Col span="3">
+          <Input icon="search" placeholder="请输入邮箱搜索..." v-model="search.email"/>
+        </Col>
+        <Col span="2">
+          <Button type="primary" icon="ios-search" @click="getData()">Search</Button>
+        </Col>
+      </Row>
+      <br>
+      <Row>
+        <Table :columns="columns" :data="data" stripe :loading="loading" border size="small" @on-sort-change="handleSortChange"></Table>
 
         <div style="text-align: center;margin: 16px 0">
           <Page
@@ -23,7 +36,9 @@
             @on-change="getData"
             @on-page-size-change="handleChangeSize"
           ></Page>
-      </div>
+        </div>
+      </Row>
+
 
     </Card>
   </div>
@@ -172,15 +187,20 @@ export default {
       authModal: false,
       addUserModal: false,
       sortType: 'normal', //normal asc desc
+      search: {},
     }
   },
   methods: {
     getData () {
       if (this.loading) return
-
+        let search = [];
       this.loading = true
+        if(JSON.stringify(this.search)) {
+            search =JSON.stringify(this.search)
+        }
 
-      users(this.current, this.size, this.sortType).then(res => {
+console.log(JSON.stringify(this.search))
+      users(this.current, this.size, this.sortType, search).then(res => {
 
         this.data = res.data.data;
         this.total = res.data.meta.total;
