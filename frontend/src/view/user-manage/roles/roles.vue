@@ -7,8 +7,8 @@
 
     <Card>
       <p slot="title">
-        <Icon type="ios-film-outline"></Icon>
-        {{ $t('permissions-list') }}
+        <Icon type="md-card"></Icon>
+        {{ $t('roles-list') }}
       </p>
       <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-role') }}</Button>
       <Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>
@@ -49,11 +49,11 @@
             }
           },
           {
-            title: '角色',
+            title: this.$t('role'),
             key: 'name',
           },
           {
-            title: '权限',
+            title: this.$t('auth'),
             key: 'permissions',
             render: (h, params) => {
               console.log(params.row.permissions)
@@ -72,11 +72,11 @@
             }
           },
           {
-            title: '备注',
+            title: this.$t('comment'),
             key: 'comment'
           },
           {
-            title: '操作',
+            title: this.$t('operation'),
             key: 'id',
             render: (h, params) => {
               return h('div',[

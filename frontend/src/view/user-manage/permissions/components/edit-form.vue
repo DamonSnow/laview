@@ -7,12 +7,12 @@
                 :loading="loading"
                 @on-ok="handleSubmit('editPermissionForm')"
                 @on-cancel="handleReset('editPermissionForm')">
-            <p slot="header">编辑权限</p>
-            <Form ref="editPermissionForm" :model="permission" :rules="rules" :label-width="80">
-                <FormItem label="权限" prop="name">
+            <p slot="header">{{ $t('edit-permission') }}</p>
+            <Form ref="editPermissionForm" :model="permission" :rules="rules" :label-width="90">
+                <FormItem :label="$t('auth')" prop="name">
                     <Input v-model="permission.name" :placeholder='$t("Enter Permission name")'></Input>
                 </FormItem>
-                <FormItem label="备注">
+                <FormItem :label="$t('comment')">
                     <Input v-model="permission.comment"></Input>
                 </FormItem>
             </Form>

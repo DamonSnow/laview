@@ -10,13 +10,13 @@
       :loading="loading"
       @on-ok="handleSubmit('userForm')"
       @on-cancel="handleReset('userForm')">
-      <p slot="header">新增用户</p>
+      <p slot="header">{{ $t('add-user') }}</p>
       <Alert type="error" v-if="errorMsg">{{ errorMsg }}</Alert>
       <Form ref="userForm" :model="user" :rules="ruleValidate" :label-width="80">
-        <FormItem label="姓名" prop="name">
+        <FormItem :label="$t('name')" prop="name">
           <Input v-model="user.name" :placeholder='$t("Enter User name")'></Input>
         </FormItem>
-        <FormItem label="头像">
+        <FormItem :label="$t('avatar')">
           <Row>
             <Col span="6">
             <Upload
@@ -48,13 +48,13 @@
           </Row>
 
         </FormItem>
-        <FormItem label="E-mail" prop="email">
+        <FormItem :label="$t('e-mail')" prop="email">
           <Input v-model="user.email"></Input>
         </FormItem>
-        <FormItem label="工号" prop="job_number">
+        <FormItem :label="$t('job number')" prop="job_number">
           <Input v-model="user.job_number"></Input>
         </FormItem>
-        <FormItem label="手机号">
+        <FormItem :label="$t('phone')">
           <Input v-model="user.phone"></Input>
         </FormItem>
     </Form>

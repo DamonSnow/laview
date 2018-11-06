@@ -7,7 +7,7 @@
 
     <Card>
       <p slot="title">
-        <Icon type="ios-film-outline"></Icon>
+        <Icon type="ios-lock"></Icon>
         {{ $t('permissions-list') }}
       </p>
       <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-permission') }}</Button>
@@ -48,15 +48,15 @@
             }
           },
           {
-            title: '权限',
+            title: this.$t('auth'),
             key: 'name',
           },
           {
-            title: '备注',
+            title: this.$t('comment'),
             key: 'comment'
           },
           {
-            title: '操作',
+            title: this.$t('operation'),
             key: 'id',
             render: (h, params) => {
               return h('div',[

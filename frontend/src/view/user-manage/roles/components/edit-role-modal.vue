@@ -9,18 +9,18 @@
       @on-ok="handleSubmit('editRoleForm')"
       @on-cancel="handleReset('editRoleForm')">
       <p slot="header">{{ $t('edit-role') }}</p>
-      <Form ref="editRoleForm" :model="role" :rules="ruleValidate" :label-width="80">
-        <FormItem label="角色" prop="name">
+      <Form ref="editRoleForm" :model="role" :rules="ruleValidate" :label-width="90">
+        <FormItem :label='$t("role")' prop="name">
           <Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>
         </FormItem>
-        <FormItem label="权限" prop="permissions">
+        <FormItem :label='$t("auth")' prop="permissions">
           <Transfer
             :data="rights"
             :target-keys="role.permissions"
             :render-format="permission_rendor"
             @on-change="handlePermission"></Transfer>
         </FormItem>
-        <FormItem label="备注">
+        <FormItem :label='$t("comment")'>
           <Input v-model="role.comment"></Input>
         </FormItem>
       </Form>

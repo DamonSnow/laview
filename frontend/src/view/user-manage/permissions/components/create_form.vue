@@ -7,12 +7,12 @@
       :loading="loading"
       @on-ok="handleSubmit('permissionForm')"
       @on-cancel="handleReset('permissionForm')">
-      <p slot="header">新增权限</p>
-      <Form ref="permissionForm" :model="permission" :rules="ruleValidate" :label-width="80">
-        <FormItem label="权限" prop="name">
+      <p slot="header">{{ $t('add-permission') }}</p>
+      <Form ref="permissionForm" :model="permission" :rules="ruleValidate" :label-width="90">
+        <FormItem :label="$t('auth')" prop="name">
           <Input v-model="permission.name" :placeholder='$t("Enter Permission name")'></Input>
         </FormItem>
-        <FormItem label="备注">
+        <FormItem :label="$t('comment')">
           <Input v-model="permission.comment"></Input>
         </FormItem>
       </Form>

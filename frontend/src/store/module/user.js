@@ -104,6 +104,7 @@ export default {
     refreshToken ({ dispatch, state, commit }) {
       return new Promise((resolve, reject) => {
         refreshToken(state.refresh_token).then(res => {
+          const data = res.data
           commit('setToken', data.access_token)
           commit('setRefreshToken', data.refresh_token)
           commit('setExpiredIn', data.expires_in)

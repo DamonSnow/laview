@@ -9,7 +9,7 @@
     <!-- 封装成组件 -->
     <Card>
       <p slot="title">
-        <Icon type="ios-film-outline"></Icon>
+        <Icon type="ios-person"></Icon>
         {{ $t('user-list') }}
       </p>
       <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-user') }}</Button>
@@ -54,14 +54,14 @@ export default {
           }
         },
         {
-          title: '工号',
+          title: this.$t('job number'),
           align: 'center',
           key: 'job_number',
           sortable: 'custom',
           width: 100
         },
         {
-          title: '名称',
+          title: this.$t('name'),
           key: 'name',
           align: 'center',
           render: (h, params) => {
@@ -78,7 +78,7 @@ export default {
           },
         },
         {
-          title: 'Active',
+          title: 'active',
           key: 'active',
           align: 'center',
           width: 100,
@@ -100,7 +100,7 @@ export default {
           },
         },
         {
-          title: '角色',
+          title: this.$t('role'),
           key: 'roles',
           align: 'center',
           render: (h, params) => {
@@ -118,17 +118,17 @@ export default {
           }
         },
         {
-          title: '邮箱',
+          title: this.$t('e-mail'),
           align: 'center',
           key: 'email'
         },
         {
-          title: '手机',
+          title: this.$t('phone'),
           align: 'center',
           key: 'phone'
         },
         {
-            title: '操作',
+            title: this.$t('operation'),
             align: 'center',
             key: 'user_id',
             render: (h, params) => {

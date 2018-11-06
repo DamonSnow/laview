@@ -8,9 +8,9 @@
       width="700"
       @on-ok="handleSubmit('editUserRoleForm')"
       @on-cancel="handleReset('editUserRoleForm')">
-      <p slot="header">编辑用户角色</p>
+      <p slot="header">{{ $t('edit-user') }}</p>
       <Form ref="editUserRoleForm" :model="roles" :rules="ruleValidate" :label-width="80">
-        <FormItem label="角色" prop="tagetRoles">
+        <FormItem :label="$t('role')" prop="tagetRoles">
           <Transfer
             :data="allRoles"
             :target-keys="roles.tagetRoles"

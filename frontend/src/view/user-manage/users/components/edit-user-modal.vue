@@ -7,13 +7,13 @@
         :loading="loading"
         @on-ok="handleSubmit('editUserForm')"
         @on-cancel="handleReset('editUserForm')">
-      <p slot="header">编辑用户信息</p>
+      <p slot="header">{{ $t('edit-user') }}</p>
       <Alert type="error" v-if="errorMsg">{{ errorMsg }}</Alert>
       <Form ref="editUserForm" :model="user" :rules="ruleValidate" :label-width="80">
-        <FormItem label="姓名" prop="name">
+        <FormItem :label="$t('name')" prop="name">
           <Input v-model="user.name" :placeholder='$t("Enter User name")'></Input>
         </FormItem>
-        <FormItem label="头像">
+        <FormItem :label="$t('avatar')">
           <Row>
             <Col span="6">
             <Upload
@@ -45,10 +45,10 @@
           </Row>
 
         </FormItem>
-        <FormItem label="手机号">
+        <FormItem :label="$t('phone')">
           <Input v-model="user.phone"></Input>
         </FormItem>
-        <FormItem label="激活">
+        <FormItem :label="$t('active')">
           <i-switch v-model="user.active" size="large" :true-value="1" :false-value="0">
             <span slot="open">On</span>
             <span slot="close">Off</span>
@@ -134,7 +134,6 @@
         this.user.phone = '';
       },
       open (row) {
-        console.log(row)
         this.userId = row.user_id;
         this.user.name = row.name;
         this.user.avatar = row.avatar;
