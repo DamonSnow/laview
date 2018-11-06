@@ -5,6 +5,8 @@
 # Functions
 - login and logout
 - user management(include user & role & permission)
+- dictionary manage(plan to do)
+- department manage(plan to do)
 
 # File Structures
 ```

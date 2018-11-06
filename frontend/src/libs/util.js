@@ -40,10 +40,8 @@ export const getExpiredIn = () => {
 export const isTokenExpired = () => {
   let nDta = new Date().getTime();
   let stamp = (getExpiredIn() - nDta) / 1000;//获取时间差，单位/s
-  console.log(stamp);
-  console.log(stamp < 60 *5)
   let minutes = parseInt((stamp % (1000 * 60 * 60)) / (1000 * 60));
-  return stamp < 60 *5;
+  return stamp < 60 * config.expiredIn;
 }
 
 export const hasChild = (item) => {

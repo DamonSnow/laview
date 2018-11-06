@@ -17,6 +17,10 @@ export default {
     pro: 'http://laview.my/api'
   },
   /**
+   * @description token在需要更新的时间，单位分钟
+   */
+  expiredIn: 30,
+  /**
    * @description 默认打开的首页的路由name值，默认为home
    */
   homeName: 'home',
