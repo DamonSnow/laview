@@ -89,6 +89,36 @@ export default [
       },
     ]
   },
+    {
+        path: '/dictionaries',
+        name: 'dictionary-manage',
+        meta: {
+            icon: 'ios-lock',
+            title: '字典配置',
+            access: ['super_admin']
+        },
+        component: Main,
+        children: [
+            {
+                path: 'dic_types',
+                name: 'dictionary-type-list',
+                meta: {
+                    icon: 'ios-people',
+                    title: '字典类型'
+                },
+                component: () => import('@/view/dictionaries/types/index.vue')
+            },
+            {
+                path: 'dic_items',
+                name: 'dictionary-item-list',
+                meta: {
+                    icon: 'md-card',
+                    title: '字典项目'
+                },
+                component: () => import('@/view/dictionaries/items/index.vue')
+            },
+        ]
+    },
   {
     path: '/error_logger',
     name: 'error_logger',

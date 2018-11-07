@@ -1,17 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Damon
- * Date: 2018/10/25
- * Time: 14:51
- */
 
 namespace App\Http\Resources;
 
-
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Permission extends JsonResource
+class DictionaryItem extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,10 +16,15 @@ class Permission extends JsonResource
     {
         return [
             'id'         => $this->id,
-            'name'       => $this->name,
-            'guard_name' => $this->guard_name,
+            'type_id'    => $this->type_id,
+            'dic_type'   => $this->dicType->dic_name,
+            'item_name'  => $this->item_name,
+            'item_value' => $this->item_value,
+            'enable'     => $this->enable,
+            'sort'       => $this->sort,
             'comment'    => $this->comment,
-            'created_at' => $this->created_at->toDateString(),
+            'created_at' => $this->created_at,
         ];
+
     }
 }

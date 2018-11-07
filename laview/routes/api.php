@@ -21,38 +21,42 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 $api = app('Dingo\Api\Routing\Router');
 
-$api->version('v1', function($api) {
-    $api->get('version', function() {
+$api->version('v1', function ($api) {
+    $api->get('version', function () {
 
         return response('this is version v1');
     });
-    $api->group(['middleware'=>['auth:api','cors']],function($api){
-        $api->post('logout','App\Http\Controllers\Api\AuthenticateController@logout');
+    $api->group(['middleware' => ['auth:api', 'cors']], function ($api) {
+        $api->post('logout', 'App\Http\Controllers\Api\AuthenticateController@logout');
         //用户相关
-        $api->get('get_info','App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
-        $api->get('users','App\Http\Controllers\Api\UserController@users')->name('users');
-        $api->resource('users','App\Http\Controllers\Api\UserController',['only'=>['store','update']]);
-        $api->post('update_user_role/{id}','App\Http\Controllers\Api\UserController@updateUserRole');
-        $api->post('uploadAvatar','App\Http\Controllers\Api\ImageController@uploadAvatar');
+        $api->get('get_info', 'App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
+        $api->get('users', 'App\Http\Controllers\Api\UserController@users')->name('users');
+        $api->resource('users', 'App\Http\Controllers\Api\UserController', ['only' => ['store', 'update']]);
+        $api->post('update_user_role/{id}', 'App\Http\Controllers\Api\UserController@updateUserRole');
+        $api->post('uploadAvatar', 'App\Http\Controllers\Api\ImageController@uploadAvatar');
         //权限相关
-        $api->resource('permissions','App\Http\Controllers\Api\PermissionsController');
-        $api->get('all_permissions','App\Http\Controllers\Api\PermissionsController@allPermissions');
+        $api->resource('permissions', 'App\Http\Controllers\Api\PermissionsController');
+        $api->get('all_permissions', 'App\Http\Controllers\Api\PermissionsController@allPermissions');
         //角色相关
-        $api->resource('roles','App\Http\Controllers\Api\RoleController');
-        $api->get('all_roles','App\Http\Controllers\Api\RoleController@allRoles');
+        $api->resource('roles', 'App\Http\Controllers\Api\RoleController');
+        $api->get('all_roles', 'App\Http\Controllers\Api\RoleController@allRoles');
 
+        //系统字典相关
+        $api->get('all_dic_types', 'App\Http\Controllers\Api\DictionaryTypeController@allDicTypes');
+        $api->resource('dic_types', 'App\Http\Controllers\Api\DictionaryTypeController', ['only' => ['index', 'store', 'update']]);
+        $api->resource('dic_items', 'App\Http\Controllers\Api\DictionaryItemController', ['only' => ['index', 'store', 'update']]);
     });
 
 
-    $api->get('users/{id}','App\Http\Controllers\Api\UserController@getUser');
+    $api->get('users/{id}', 'App\Http\Controllers\Api\UserController@getUser');
 
-    $api->post('login','App\Http\Controllers\Api\AuthenticateController@login');
+    $api->post('login', 'App\Http\Controllers\Api\AuthenticateController@login');
 
-    $api->post('refresh','App\Http\Controllers\Api\AuthenticateController@refresh');
+    $api->post('refresh', 'App\Http\Controllers\Api\AuthenticateController@refresh');
 });
 
-$api->version('v2', function($api) {
-    $api->get('version', function() {
+$api->version('v2', function ($api) {
+    $api->get('version', function () {
         return response('this is version v2');
     });
 });

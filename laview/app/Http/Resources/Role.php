@@ -15,18 +15,18 @@ class Role extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'guard_name' => $this->guard_name,
+            'id'          => $this->id,
+            'name'        => $this->name,
+            'guard_name'  => $this->guard_name,
             'permissions' => $this->permissions,
-            'comment' => $this->comment,
-            'created_at' => $this->created_at,
+            'comment'     => $this->comment,
+            'created_at'  => $this->created_at,
         ];
     }
 }

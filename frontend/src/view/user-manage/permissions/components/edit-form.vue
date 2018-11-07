@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import { getPermission,updatePermission } from '@/api/permissions'
+    import { updatePermission } from '@/api/permissions'
     export default {
         name: 'edit-permission-madel',
         props: {

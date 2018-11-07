@@ -1,16 +1,13 @@
 <template>
   <div>
-    <!-- 新增角色modal -->
-    <createRoleModal ref="createRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></createRoleModal>
-    <!-- 编辑角色modal -->
-    <editRoleModal ref="editRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></editRoleModal>
-
+    <!-- 新增字典项目modal -->
+    <createDicItem ref="createDicItem" :addModal="addModal" :dicTypes="dicTypes" @refreshTable="getData"></createDicItem>
     <Card>
       <p slot="title">
         <Icon type="md-card"></Icon>
-        {{ $t('roles-list') }}
+        {{ $t('dictionary-item-list') }}
       </p>
-      <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-role') }}</Button>
+      <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('new') }}</Button>
       <Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>
 
       <div style="text-align: center;margin: 16px 0">
@@ -28,14 +25,13 @@
 </template>
 
 <script>
-  import { roles, addRole, deleteRole } from '@/api/roles'
-  import { allPermissions } from '@/api/permissions'
-  import createRoleModal from './components/create-role-modal.vue'
-  import editRoleModal from './components/edit-role-modal.vue'
+  import { dicItems } from '@/api/dictionary_item'
+  import { allDicTypes } from '@/api/dictionary_type'
+  import createDicItem from './components/create-dic-item.vue'
   export default {
     components: {
-      createRoleModal,
-      editRoleModal
+        createDicItem,
+//            editDicType
     },
     data () {
       return {
@@ -49,31 +45,28 @@
             }
           },
           {
-            title: this.$t('role'),
-            key: 'name',
+            title: this.$t('dictionary_type'),
+            key: 'dic_type',
           },
           {
-            title: this.$t('auth'),
-            key: 'permissions',
-            render: (h, params) => {
-              console.log(params.row.permissions)
-                if(params.row.permissions.length > 0) {
-                  let cols = params.row.permissions.map(item => {
-
-                    return h('Tag', {
-                      props: {
-                        color: 'success'
-                      }
-                    }, item.name);
-                  })
-                  return h('div', cols)
-                }
-
-            }
+            title: this.$t('item_name'),
+            key: 'item_name',
+          },
+          {
+            title: this.$t('item_value'),
+            key: 'item_value',
+          },
+          {
+            title: this.$t('enable'),
+            key: 'enable',
+          },
+          {
+            title: this.$t('sort'),
+            key: 'sort',
           },
           {
             title: this.$t('comment'),
-            key: 'comment'
+            key: 'comment',
           },
           {
             title: this.$t('operation'),
@@ -87,30 +80,21 @@
                   },
                   on: {
                     click: () => {
-                      this.openEditForm(params.row)//打开编辑页
+//                                            this.openEditForm(params.row)//打开编辑页
                     }
                   }
                 },this.$t('edit')),
                 h('Poptip',{
                   props: {
                     confirm: true,
-                    title: '确认要删除该权限吗?'
+                    title: '确认要删除该配置项目吗?'
                   },
                   style: {
                     margin: '0 0 0 5px'
                   },
                   on: {
                     'on-ok': () => {
-                      let _this = this;
-                      deleteRole(params.row.id).then(res => {
-                        this.$Message.success('删除role成功');
-                        if(parseInt(params.row._index) === 0 && this.current !== 1) {
-                          this.current --;
-                        }
-                        this.getData();
-                      }).catch(function (error) {
-                        _this.$Message.error(error.response.data.message);
-                      })
+
                     }
                   }
                 },[
@@ -131,7 +115,7 @@
         current: 1,
         size: 10,
         addModal: false,
-        rights: [],
+        dicTypes: [],
 
       }
     },
@@ -141,22 +125,22 @@
 
         this.loading = true
 
-        roles(this.current, this.size).then(res => {
-          console.log(res.data)
+        dicItems(this.current, this.size).then(res => {
           this.data = res.data.data;
           this.total = res.data.meta.total;
           this.loading = false;
         })
       },
-      getPermissions () {
-        allPermissions().then(res => {
-          this.rights = res.data.data.reduce(function (per, item, index) {
-            per[index] = [];
-            per[index]['key'] = item['id'];
-            per[index]['label'] = item['name'];
-            per[index]['disable'] = false;
-            return per;
-          },[]);console.log(this.rights)
+      getDicTypes () {
+        allDicTypes(this.current, this.size).then(res => {
+          let index = 0;
+          for (let i in res.data.data) {
+            this.dicTypes[index] = [];
+            this.dicTypes[index]['id'] = i;
+            this.dicTypes[index]['dic_name'] = res.data.data[i];
+            index++;
+          }
+
         })
       },
       handleChangeSize (val) {
@@ -166,15 +150,15 @@
         })
       },
       openCreateForm () {
-        this.$refs.createRole.open();
+        this.$refs.createDicItem.open();
       },
-      openEditForm (row) {
-        this.$refs.editRole.open(row);
-      }
+//            openEditForm (row) {
+//                this.$refs.editRole.open(row);
+//            }
     },
     mounted: function () {
       this.getData();
-      this.getPermissions();
+      this.getDicTypes();
     }
   }
 </script>

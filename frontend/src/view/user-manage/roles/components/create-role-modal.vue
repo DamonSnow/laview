@@ -63,7 +63,7 @@
           if (valid) {
             addRole(_this.role.name, _this.role.permissions, _this.role.comment).then(res => {
               if(parseInt(res.data.code) === 200) {
-                this.$Message.success('新增权限成功');
+                this.$Message.success('新增角色成功');
                 _this.$emit('refreshTable',false)
                 _this.showModal = false;
               } else {
