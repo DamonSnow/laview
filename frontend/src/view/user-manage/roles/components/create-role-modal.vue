@@ -65,6 +65,7 @@
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('新增角色成功');
                 _this.$emit('refreshTable',false)
+                _this.handleReset('roleForm')
                 _this.showModal = false;
               } else {
                 this.$Message.error(res.data.message);

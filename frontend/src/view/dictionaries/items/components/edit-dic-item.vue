@@ -1,18 +1,17 @@
 <template>
   <div>
     <Modal
-      ref="createDicItem"
+      ref="editDicItem"
       v-model="showModal"
       title="Title"
       :loading="loading"
-      width="700"
-      @on-ok="handleSubmit('dicItemForm')"
-      @on-cancel="handleReset('dicItemForm')">
-      <p slot="header">{{ $t('add-dictionary-item') }}</p>
-      <Form ref="dicItemForm" :model="dictionaryItem" :rules="ruleValidate" :label-width="90">
+      @on-ok="handleSubmit('editDicItemForm')"
+      @on-cancel="handleReset('editDicItemForm')">
+      <p slot="header">{{ $t('edit-dictionary-item') }}</p>
+      <Form ref="editDicItemForm" :model="dictionaryItem" :rules="rules" :label-width="120">
         <FormItem :label='$t("dictionary_type")' prop="type_id">
           <Select v-model="dictionaryItem.type_id">
-            <Option v-for="dicType in dicTypes" :value="dicType.id" :key="dicType.id">{{ dicType.dic_name }}</Option>
+            <Option v-for="dicType in dicTypes" :value='dicType.id' :key='dicType.id'>{{ dicType.dic_name }}</Option>
           </Select>
         </FormItem>
         <FormItem :label='$t("item_name")' prop="item_name">
@@ -33,25 +32,26 @@
 </template>
 
 <script>
-  import { addDicItem } from '@/api/dictionary_item'
+  import { updateDicItem } from '@/api/dictionary_item'
   export default {
-    name: 'create-dic-type',
+    name: 'edit-dic-item',
     props: {
       addModal: Boolean,
       dicTypes: Array,
     },
-    data () {
+    data() {
       return {
         showModal: this.addModal,
         loading: false,
         dictionaryItem: {
-          type_id: 0,
+          type_id: '',
           item_name: '',
           item_value: '',
-          sort: '',
+          sort: 1,
           comment: '',
         },
-        ruleValidate: {
+        dictionaryItemId: 0,
+        rules: {
           type_id: [
             { required: true, message: 'The dictionary type cannot be empty', trigger: 'change' }
           ],
@@ -70,27 +70,15 @@
     methods: {
       handleSubmit (name) {
         let _this = this;
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            addDicItem(_this.dictionaryItem).then(res => {
-              if(parseInt(res.data.code) === 200) {
-                this.$Message.success('新增数据字典类型成功');
-                _this.$emit('refreshTable',false)
-                _this.handleReset('dicItemForm')
-                _this.showModal = false;
-              } else {
-                this.$Message.error(res.data.message);
-                _this.showModal = true;
-              }
-            }).catch(function (error) {
-              _this.showModal = true;
-              _this.$Message.error(error.response.data.message);
-              _this.handleReset('dicItemForm')
-            })
 
+        _this.$refs[name].validate((valid) => {
+          if (valid) {
+            updateDicItem(_this.dictionaryItemId, _this.dictionaryItem).then(res => {
+              this.$Message.success('更新数据字典项目成功');
+              _this.$emit('refreshTable', false)
+            })
           } else {
-            //防止验证失败关闭model，需要将model的visible置为true
-            _this.$refs.createDicItem.visible = true;
+            _this.$refs.editDicItem.visible = true;
             _this.showModal = true;
           }
         })
@@ -98,9 +86,17 @@
       handleReset (name) {
         this.$refs[name].resetFields();
       },
-      open () {
-        this.showModal = true
+      open (row) {
+        let _this = this;
+        _this.dictionaryItemId = row.id;
+        _this.dictionaryItem.type_id = row.type_id.toString();
+        _this.dictionaryItem.item_name = row.item_name;
+        _this.dictionaryItem.item_value = row.item_value;
+        _this.dictionaryItem.sort = parseInt(row.sort);
+        _this.dictionaryItem.comment = row.comment;
+        _this.showModal = true;
       }
     }
+
   }
 </script>

@@ -28,3 +28,13 @@ export const updateDicItem = (id, dicItem) => {
     method: 'put'
   })
 }
+
+export const toggleDicItem = (id, value) => {
+    return axios.request({
+        url: `toggle_dic_items/${id}`,
+        params: {
+            enable: value,
+        },
+        method: 'get'
+    })
+}

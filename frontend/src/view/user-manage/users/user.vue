@@ -63,14 +63,12 @@ export default {
         {
           type: 'index',
           width: 60,
-          align: 'center',
           indexMethod: (row) => {
             return (row._index + 1) + (this.size * this.current) - this.size;
           }
         },
         {
           title: this.$t('job number'),
-          align: 'center',
           key: 'job_number',
           sortable: 'custom',
           width: 100
@@ -78,7 +76,6 @@ export default {
         {
           title: this.$t('name'),
           key: 'name',
-          align: 'center',
           render: (h, params) => {
 
             return h('div',[
@@ -95,7 +92,6 @@ export default {
         {
           title: 'active',
           key: 'active',
-          align: 'center',
           width: 100,
           render: (h, params) => {
             let color = '';
@@ -117,7 +113,6 @@ export default {
         {
           title: this.$t('role'),
           key: 'roles',
-          align: 'center',
           render: (h, params) => {
             if(params.row.roles.length > 0) {
               let cols = params.row.roles.map(item => {
@@ -134,17 +129,14 @@ export default {
         },
         {
           title: this.$t('e-mail'),
-          align: 'center',
           key: 'email'
         },
         {
           title: this.$t('phone'),
-          align: 'center',
           key: 'phone'
         },
         {
             title: this.$t('operation'),
-            align: 'center',
             key: 'user_id',
             render: (h, params) => {
               return h('div',[

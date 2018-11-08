@@ -30,9 +30,9 @@ class DictionaryItemController extends ApiController
         }
         DB::beginTransaction();
         try {
-            $role = DictionaryItem::create($request->all());
+            $dicItem = DictionaryItem::create($request->all());
             DB::commit();
-            return $this->success($role, 'success');
+            return $this->success($dicItem, 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
@@ -53,10 +53,26 @@ class DictionaryItemController extends ApiController
         }
         DB::beginTransaction();
         try {
-            $user = DictionaryItem::find($id);
-            $user->update($request->all());
+            $dicItem = DictionaryItem::find($id);
+            $dicItem->update($request->all());
             DB::commit();
             return $this->success('update','success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return $this->setStatusCode($code)->failed($msg);
+        }
+    }
+
+    public function toggleDicItem($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $dicItem = DictionaryItem::find($id);
+            $dicItem->update(['enable' => $request->enable]);
+            DB::commit();
+            return $this->success('toggle dictionary item enable','success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();

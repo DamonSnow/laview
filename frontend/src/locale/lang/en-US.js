@@ -37,6 +37,7 @@ export default {
   'enable': 'Enable',
   'sort': 'sort',
   'add-dictionary-item': 'Create Dictionary Item',
+  'edit-dictionary-item': 'Edit Dictionary Item',
   'Enter dictionary item name': 'Enter Dictionary Item Name',
   'Enter dictionary item value': 'Enter Dictionary Item Value',
   'edit': 'edit',

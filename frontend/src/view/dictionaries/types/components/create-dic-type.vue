@@ -41,7 +41,7 @@
             { required: true, message: 'The code cannot be empty', trigger: 'blur' }
           ],
           dic_name: [
-            { required: true,  message: 'The name cannot be empty', trigger: 'change' },
+            { required: true,  message: 'The name cannot be empty', trigger: 'blur' },
           ],
         },
       }
@@ -55,6 +55,7 @@
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('新增数据字典类型成功');
                 _this.$emit('refreshTable',false)
+                _this.handleReset('dicTypeForm')
                 _this.showModal = false;
               } else {
                 this.$Message.error(res.data.message);

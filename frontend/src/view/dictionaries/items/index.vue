@@ -2,6 +2,7 @@
   <div>
     <!-- 新增字典项目modal -->
     <createDicItem ref="createDicItem" :addModal="addModal" :dicTypes="dicTypes" @refreshTable="getData"></createDicItem>
+    <editDicItem ref="editDicItem" :addModal="addModal" :dicTypes="dicTypes" @refreshTable="getData"></editDicItem>
     <Card>
       <p slot="title">
         <Icon type="md-card"></Icon>
@@ -25,13 +26,14 @@
 </template>
 
 <script>
-  import { dicItems } from '@/api/dictionary_item'
+  import { dicItems, toggleDicItem } from '@/api/dictionary_item'
   import { allDicTypes } from '@/api/dictionary_type'
   import createDicItem from './components/create-dic-item.vue'
+  import editDicItem from './components/edit-dic-item.vue'
   export default {
     components: {
-        createDicItem,
-//            editDicType
+      createDicItem,
+      editDicItem
     },
     data () {
       return {
@@ -59,6 +61,43 @@
           {
             title: this.$t('enable'),
             key: 'enable',
+            render: (h, params) => {
+                return h('div', [
+
+                    h('i-switch', {
+                        props: {
+                            type: 'success',
+                            value: params.row.enable,
+                            'true-value': 1,
+                            'false-value': 0
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            'on-change': (value) => {
+                                //参数value是回调值，并没有使用到
+                                toggleDicItem(params.row.id, value).then(res => {
+                                    params.row.enable = value;
+                                })
+                            }
+                        }
+                    },[
+                        h('span', {
+                            slot: 'open',
+                            domProps: {
+                                innerHTML: '开'
+                            }
+                        }),
+                        h('span', {
+                            slot: 'close',
+                            domProps: {
+                                innerHTML: '关'
+                            }
+                        })
+                    ])
+                ]);
+            }
           },
           {
             title: this.$t('sort'),
@@ -80,31 +119,10 @@
                   },
                   on: {
                     click: () => {
-//                                            this.openEditForm(params.row)//打开编辑页
+                      this.openEditForm(params.row)//打开编辑页
                     }
                   }
-                },this.$t('edit')),
-                h('Poptip',{
-                  props: {
-                    confirm: true,
-                    title: '确认要删除该配置项目吗?'
-                  },
-                  style: {
-                    margin: '0 0 0 5px'
-                  },
-                  on: {
-                    'on-ok': () => {
-
-                    }
-                  }
-                },[
-                  h('Button',{
-                    props: {
-                      type : 'error',
-                      size: 'small'
-                    },
-                  },this.$t('delete'))
-                ],this.$t('delete'))
+                },this.$t('edit'))
               ]);
             },
           }
@@ -152,9 +170,9 @@
       openCreateForm () {
         this.$refs.createDicItem.open();
       },
-//            openEditForm (row) {
-//                this.$refs.editRole.open(row);
-//            }
+      openEditForm (row) {
+        this.$refs.editDicItem.open(row);
+      }
     },
     mounted: function () {
       this.getData();

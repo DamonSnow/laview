@@ -15,7 +15,10 @@
       </Input>
     </FormItem>
     <FormItem>
-      <Button @click="handleSubmit" type="primary" long>登录</Button>
+      <Button @click="handleSubmit" :loading="saveLoading" type="primary" long>
+        <span v-if="!saveLoading">登录</span>
+        <span v-else>正在登录...</span>
+      </Button>
     </FormItem>
   </Form>
 </template>
@@ -46,7 +49,8 @@ export default {
       form: {
         email: 'hqfdotcom@gmail.com',
         password: ''
-      }
+      },
+      saveLoading: false
     }
   },
   computed: {
@@ -61,12 +65,21 @@ export default {
     handleSubmit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
+          this.saveLoading = true
           this.$emit('on-success-valid', {
             email: this.form.email,
             password: this.form.password
           })
+        } else {
+          this.saveLoading = false
         }
       })
+    },
+    loading() {
+      this.saveLoading = true
+    },
+    loadFalse() {
+      this.saveLoading = false
     }
   }
 }

@@ -45,6 +45,7 @@ $api->version('v1', function ($api) {
         $api->get('all_dic_types', 'App\Http\Controllers\Api\DictionaryTypeController@allDicTypes');
         $api->resource('dic_types', 'App\Http\Controllers\Api\DictionaryTypeController', ['only' => ['index', 'store', 'update']]);
         $api->resource('dic_items', 'App\Http\Controllers\Api\DictionaryItemController', ['only' => ['index', 'store', 'update']]);
+        $api->get('toggle_dic_items/{id}', 'App\Http\Controllers\Api\DictionaryItemController@toggleDicItem');
     });
 
 

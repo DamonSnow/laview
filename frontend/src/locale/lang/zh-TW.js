@@ -40,6 +40,7 @@ export default {
   'enable': '啟用',
   'sort': '排序',
   'add-dictionary-item': '新增字典項目',
+  'edit-dictionary-item': '編輯字典項目',
   'Enter dictionary item name': '输入字典項目名稱',
   'Enter dictionary item value': '输入字典項目值',
   components: '组件',

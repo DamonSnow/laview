@@ -41,6 +41,7 @@ export default {
   'enable': '启用',
   'sort': '排序',
   'add-dictionary-item': '新增字典项目',
+  'edit-dictionary-item': '编辑字典项目',
   'Enter dictionary item name': '输入字典项目名称',
   'Enter dictionary item value': '输入字典项目值',
   components: '组件',

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import {updateDicType} from '@/api/dictionary_type'
+  import { updateDicType } from '@/api/dictionary_type'
   export default {
     name: 'edit-dic-type',
     props: {

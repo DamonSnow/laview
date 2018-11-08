@@ -55,6 +55,7 @@
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('新增权限成功');
                 _this.$emit('refreshTable',false)
+                _this.handleReset('permissionForm')
                 _this.showModal = false;
               } else {
                 this.$Message.error(res.data.message);
