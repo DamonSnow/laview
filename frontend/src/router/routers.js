@@ -89,36 +89,78 @@ export default [
       },
     ]
   },
-    {
-        path: '/dictionaries',
-        name: 'dictionary-manage',
-        meta: {
-            icon: 'ios-lock',
-            title: '字典配置',
-            access: ['super_admin']
-        },
-        component: Main,
-        children: [
-            {
-                path: 'dic_types',
-                name: 'dictionary-type-list',
-                meta: {
-                    icon: 'ios-people',
-                    title: '字典类型'
-                },
-                component: () => import('@/view/dictionaries/types/index.vue')
-            },
-            {
-                path: 'dic_items',
-                name: 'dictionary-item-list',
-                meta: {
-                    icon: 'md-card',
-                    title: '字典项目'
-                },
-                component: () => import('@/view/dictionaries/items/index.vue')
-            },
-        ]
+  {
+    path: '/dictionaries',
+    name: 'dictionary-manage',
+    meta: {
+      icon: 'ios-lock',
+      title: '字典配置',
+      access: ['super_admin']
     },
+    component: Main,
+    children: [
+      {
+        path: 'dic_types',
+        name: 'dictionary-type-list',
+        meta: {
+            icon: 'ios-people',
+            title: '字典类型'
+        },
+        component: () => import('@/view/dictionaries/types/index.vue')
+      },
+      {
+        path: 'dic_items',
+        name: 'dictionary-item-list',
+        meta: {
+            icon: 'md-card',
+            title: '字典项目'
+        },
+        component: () => import('@/view/dictionaries/items/index.vue')
+      },
+    ]
+  },
+  {
+    path: '/message',
+    name: 'message',
+    component: Main,
+    meta: {
+        hideInBread: true,
+        hideInMenu: true
+    },
+    children: [
+        {
+            path: 'message_page',
+            name: 'message_page',
+            meta: {
+                icon: 'md-notifications',
+                title: '消息中心'
+            },
+            component: () => import('@/view/single-page/message/index.vue')
+        }
+    ]
+  },
+  {
+    path: '/components',
+    name: 'components',
+    meta: {
+        icon: 'logo-buffer',
+        title: '组件'
+    },
+    component: Main,
+    children: [
+
+        {
+            path: 'org_tree_page',
+            name: 'org_tree_page',
+            meta: {
+                icon: 'ios-people',
+                title: '组织结构树'
+            },
+            component: () => import('@/view/components/org-tree')
+        },
+
+    ]
+  },
   {
     path: '/error_logger',
     name: 'error_logger',

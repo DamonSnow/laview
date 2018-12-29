@@ -72,5 +72,10 @@ export default {
   error_store_page: 'Error Collection',
   error_logger_page: 'Error Logger',
   query: 'Query',
-  params: 'Params'
+  params: 'Params',
+  cropper_page: 'Cropper',
+  message_page: 'Message Center',
+  tree_table_page: 'Tree Table',
+  org_tree_page: 'Org Tree',
+  drag_drawer_page: 'Draggable Drawer'
 }
