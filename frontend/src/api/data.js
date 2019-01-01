@@ -38,7 +38,7 @@ export const uploadImg = formData => {
 
 export const getOrgData = () => {
   return axios.request({
-    url: 'get_org_data',
+    url: 'branches',
     method: 'get'
   })
 }
