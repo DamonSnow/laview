@@ -165,7 +165,7 @@ export default {
     getMessageList ({ state, commit }) {
       return new Promise((resolve, reject) => {
         getMessage().then(res => {
-          const { unread, readed, trash } = res.data
+          const { unread, readed, trash } = res.data.data
           commit('setMessageUnreadList', unread.sort((a, b) => new Date(b.create_time) - new Date(a.create_time)))
           commit('setMessageReadedList', readed.map(_ => {
             _.loading = false
@@ -189,7 +189,7 @@ export default {
           resolve(contentItem)
         } else {
           getContentByMsgId(msg_id).then(res => {
-            const content = res.data
+            const content = res.data.data
             commit('updateMessageContentStore', { msg_id, content })
             resolve(content)
           })
