@@ -8,10 +8,14 @@ import iView from 'iview'
 import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
+import { directive as clickOutside } from 'v-click-outside-x'
 import installPlugin from '@/plugin'
 import 'iview/dist/styles/iview.css'
 import './index.less'
 import '@/assets/icons/iconfont.css'
+import TreeTable from 'tree-table-vue'
+import VOrgTree from 'v-org-tree'
+import 'v-org-tree/dist/v-org-tree.css'
 // 实际打包时应该不引入mock
 /* eslint-disable */
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
@@ -23,6 +27,8 @@ Vue.use(iView, {
  * @description 注册admin内置插件
  */
 installPlugin(Vue)
+Vue.use(TreeTable)
+Vue.use(VOrgTree)
 /**
  * @description 生产环境关掉提示
  */
@@ -35,6 +41,7 @@ Vue.prototype.$config = config
  * 注册指令
  */
 importDirective(Vue)
+Vue.directive('clickOutside', clickOutside)
 
 /* eslint-disable no-new */
 new Vue({

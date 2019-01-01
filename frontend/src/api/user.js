@@ -91,7 +91,7 @@ export const getUnreadCount = () => {
 
 export const getMessage = () => {
     return axios.request({
-        url: 'message/init',
+        url: 'messages',
         method: 'get'
     })
 }

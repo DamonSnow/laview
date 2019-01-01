@@ -12,7 +12,7 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $branches = MyTree::makeTree(Branch::all()->toArray(),array(
+        $branches = MyTree::makeTree(Branch::all(),array(
             'expanded' => true
         ));
         return $branches[0];

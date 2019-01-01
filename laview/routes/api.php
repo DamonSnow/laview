@@ -46,7 +46,8 @@ $api->version('v1', function ($api) {
         $api->resource('dic_items', 'App\Http\Controllers\Api\DictionaryItemController', ['only' => ['index', 'store', 'update']]);
         $api->get('toggle_dic_items/{id}', 'App\Http\Controllers\Api\DictionaryItemController@toggleDicItem');
         //messages
-        $api->resource('messages', 'App\Http\Controllers\Api\BranchController');
+        $api->resource('messages', 'App\Http\Controllers\Api\MessageController');
+        $api->get('message/count', 'App\Http\Controllers\Api\MessageController@count');
         //部门相关路由
         $api->resource('branches', 'App\Http\Controllers\Api\BranchController');
     });

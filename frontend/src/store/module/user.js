@@ -157,7 +157,7 @@ export default {
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
     getUnreadMessageCount ({ state, commit }) {
       getUnreadCount().then(res => {
-        const { data } = res
+        const { data } = res.data
         commit('setMessageCount', data)
       })
     },
