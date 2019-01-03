@@ -17,13 +17,13 @@ class MyTree
         /* 父键 */
         'parent_key'   => 'parent_id',
         /* 展开属性 */
-        'expanded_key' => 'expanded',
+        'expanded_key' => 'expand',
         /* 叶子节点属性 */
         'leaf_key'     => 'leaf',
         /* 孩子节点属性 */
         'children_key' => 'children',
         /* 是否展开子节点 */
-        'expanded'     => false,
+        'expanded'     => 'expand',
     ];
 
     /* 结果集 */
@@ -76,9 +76,10 @@ class MyTree
         foreach ($data[$index] as $id => $item) {
             if ($type == 'normal') {
                 if (isset($data[$id])) {
-                    $item[self::$config['expanded_key']] = self::$config['expanded'];
+                    $item[self::$config['expanded_key']] = 'expand';
                     $item[self::$config['children_key']] = self::makeTreeCore($id, $data, $type);
                 } else {
+                    $item[self::$config['expanded_key']] = 'expand';
                     $item[self::$config['leaf_key']] = true;
                 }
                 $r[] = $item;
