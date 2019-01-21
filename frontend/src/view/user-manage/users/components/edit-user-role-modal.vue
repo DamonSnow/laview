@@ -55,7 +55,7 @@
       handleSubmit (name) {
         let _this = this;
         this.$refs[name].validate((valid) => {
-          if (valid) {console.log(_this.roles.tagetRoles)
+          if (valid) {
             updateUserRole(_this.userId, _this.roles.tagetRoles).then(res => {
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('更新用户角色成功');
@@ -90,7 +90,7 @@
       }
     },
     mounted: function() {
-      console.log(this.allRoles)
+
     }
   }
 </script>

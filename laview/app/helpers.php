@@ -11,8 +11,8 @@ if(!function_exists('failed_response')) {
     }
 }
 
-if(!function_exists('response')) {
-    function response($data, $status ,$code, $header = []) {
+if(!function_exists('success_response')) {
+    function success_response($data, $status ,$code, $header = []) {
         return \Illuminate\Support\Facades\Response::json(['message' => $data, 'status' => $status, 'code' => $code],200);
     }
 }

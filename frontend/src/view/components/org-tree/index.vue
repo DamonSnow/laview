@@ -30,6 +30,7 @@
   import {getOrgData} from '@/api/data'
   import createModel from './components/create-org.vue'
   import editModel from './components/edit-org.vue'
+  import {delBranch} from '@/api/branches'
   import './index.less'
   const menuDic = {
     edit: '编辑部门',
@@ -82,10 +83,20 @@
               content: '<p>确定要删除该部门及其子部门？</p>',
               loading: true,
               onOk: () => {
-                setTimeout(() => {
+                delBranch(data.id).then(res => {
+
+                  if (parseInt(res.data.code) === 200) {
+                    this.getDepartmentData()
+                    this.$Modal.remove();
+                    this.$Message.success('删除部门成功');
+                  } else {
+                    this.$Message.error(res.data.message);
+                    this.$Modal.remove();
+                  }
+                }).catch(function (error) {
                   this.$Modal.remove();
-                  this.$Message.info('Asynchronously close the dialog box');
-                }, 2000);
+                  _this.$Message.error(error.response.data.message);
+                })
               }
             });
             break;

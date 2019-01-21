@@ -48,6 +48,7 @@ import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
 import routers from '@/router/routers'
 import minLogo from '@/assets/images/logo-min.png'
 import maxLogo from '@/assets/images/logo.png'
+import defAvatar from '@/assets/images/avatars/avatar.png'
 import './main.less'
 export default {
   name: 'Main',
@@ -80,7 +81,7 @@ export default {
       return this.$store.state.app.tagRouter
     },
     userAvator () {
-      return this.$store.state.user.avatorImgPath
+      return this.$store.state.user.avatorImgPath ? this.$store.state.user.avatorImgPath : defAvatar
     },
     cacheList () {
       return ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]

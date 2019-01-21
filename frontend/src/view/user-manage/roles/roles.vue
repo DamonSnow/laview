@@ -56,18 +56,18 @@
             title: this.$t('auth'),
             key: 'permissions',
             render: (h, params) => {
-              console.log(params.row.permissions)
-                if(params.row.permissions.length > 0) {
-                  let cols = params.row.permissions.map(item => {
 
-                    return h('Tag', {
-                      props: {
-                        color: 'success'
-                      }
-                    }, item.name);
-                  })
-                  return h('div', cols)
-                }
+              if(params.row.permissions.length > 0) {
+                let cols = params.row.permissions.map(item => {
+
+                  return h('Tag', {
+                    props: {
+                      color: 'success'
+                    }
+                  }, item.name);
+                })
+                return h('div', cols)
+              }
 
             }
           },
@@ -142,7 +142,6 @@
         this.loading = true
 
         roles(this.current, this.size).then(res => {
-          console.log(res.data)
           this.data = res.data.data;
           this.total = res.data.meta.total;
           this.loading = false;
@@ -156,7 +155,7 @@
             per[index]['label'] = item['name'];
             per[index]['disable'] = false;
             return per;
-          },[]);console.log(this.rights)
+          },[]);
         })
       },
       handleChangeSize (val) {

@@ -51,7 +51,6 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             addPermission(this.permission.name, this.permission.comment).then(res => {
-              console.log(res.data)
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('新增权限成功');
                 _this.$emit('refreshTable',false)

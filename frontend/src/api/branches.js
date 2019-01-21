@@ -23,6 +23,6 @@ export const delBranch = (id, branch) => {
     return axios.request({
         url: `branches/${id}`,
         data,
-        method: 'put'
+        method: 'DELETE'
     })
 }

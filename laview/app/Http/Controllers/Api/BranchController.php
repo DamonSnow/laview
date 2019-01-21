@@ -60,12 +60,12 @@ class BranchController extends ApiController
         DB::beginTransaction();
         try {
             $branch = Branch::find($id);
-            if($branch->label != $request->input('label')) $branch->label = $request->input('label');
-            if($branch->code != $request->input('code')) $branch->code = $request->input('code');
-            if($branch->parent_id != $request->input('parent_id')) $branch->parent_id = $request->input('parent_id');
+            if ($branch->label != $request->input('label')) $branch->label = $request->input('label');
+            if ($branch->code != $request->input('code')) $branch->code = $request->input('code');
+            if ($branch->parent_id != $request->input('parent_id')) $branch->parent_id = $request->input('parent_id');
             $branch->save();
             DB::commit();
-            return $this->success('update','success');
+            return $this->success('update', 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
@@ -80,14 +80,19 @@ class BranchController extends ApiController
         DB::beginTransaction();
         try {
             $branch = Branch::findOrFail($id);
+            $parentId = $branch->parent_id;
             $branch->delete();
+            if ($parentId > 0)
+                Branch::where('parent_id', $id)->update(['parent_id' => $parentId]);
+            else
+                throw new \Exception('该节点为根节点无法删除', 2001);
             DB::commit();
-            return $this->success('delete success','success');
+            return $this->success('delete success', 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
             $code = $e->getCode();
-            return failed_response($msg,'error',$code);
+            return success_response($msg, 'error', $code);
         }
     }
 

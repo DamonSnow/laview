@@ -187,11 +187,9 @@ export default {
       if (this.loading) return
         let search = [];
       this.loading = true
-        if(JSON.stringify(this.search)) {
-            search =JSON.stringify(this.search)
-        }
-
-console.log(JSON.stringify(this.search))
+      if(JSON.stringify(this.search)) {
+        search =JSON.stringify(this.search)
+      }
       users(this.current, this.size, this.sortType, search).then(res => {
 
         this.data = res.data.data;
@@ -211,7 +209,7 @@ console.log(JSON.stringify(this.search))
       this.getData();
     },
     complete (e) {
-        this.addUserModal = e;
+      this.addUserModal = e;
     },
     openCreateForm () {
       this.$refs.createUser.open();
@@ -228,14 +226,14 @@ console.log(JSON.stringify(this.search))
     this.getData()
     //获取所有角色
     allRoles().then(res => {
-        let index = 0;
-        for (let i in res.data.data) {
-            this.allRoles[index] = [];
-            this.allRoles[index]['key'] = res.data.data[i];
-            this.allRoles[index]['label'] = res.data.data[i];
-            this.allRoles[index]['disable'] = false;
-            index++;
-        }
+      let index = 0;
+      for (let i in res.data.data) {
+        this.allRoles[index] = [];
+        this.allRoles[index]['key'] = res.data.data[i];
+        this.allRoles[index]['label'] = res.data.data[i];
+        this.allRoles[index]['disable'] = false;
+        index++;
+      }
     })
   }
 }

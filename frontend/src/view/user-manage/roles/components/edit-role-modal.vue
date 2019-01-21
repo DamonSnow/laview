@@ -100,7 +100,6 @@
           return permission.id;
         });
         this.role.comment = row.comment;
-        console.log(this.role)
         this.showModal = true
       }
     }
