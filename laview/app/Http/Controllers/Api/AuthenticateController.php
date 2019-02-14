@@ -33,12 +33,6 @@ class AuthenticateController extends ApiController
         ]);
     }
 
-//    public function username()
-//    {
-//        return 'email';
-//    }
-
-    // 登录
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [

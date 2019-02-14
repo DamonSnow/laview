@@ -26,6 +26,60 @@ class BranchController extends ApiController
         return $this->success($branches[0]);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/api/branches",
+     *     summary="部门管理",
+     *     tags={"新增部门"},
+     *     description="新增部门",
+     *     operationId="branches.store",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="label",
+     *         in="query",
+     *         description="部门名称",
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="code",
+     *         in="query",
+     *         description="部门编码",
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="parent_id",
+     *         in="query",
+     *         description="父级部门id",
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="新增部门成功",
+     *         @SWG\Schema(
+     *            type="json",
+     *            @SWG\Property(
+     *               property="code",
+     *               type="integer",
+     *               description="状态码"
+     *            ),
+     *             @SWG\Property(
+     *               property="data",
+     *               type="Object",
+     *               description="数据"
+     *            ),
+     *             @SWG\Property(
+     *               property="msg",
+     *               type="string",
+     *               description="信息"
+     *            )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="error",
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
