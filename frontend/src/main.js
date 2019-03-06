@@ -23,12 +23,12 @@ import 'v-org-tree/dist/v-org-tree.css'
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
 })
+Vue.use(TreeTable)
+Vue.use(VOrgTree)
 /**
  * @description 注册admin内置插件
  */
 installPlugin(Vue)
-Vue.use(TreeTable)
-Vue.use(VOrgTree)
 /**
  * @description 生产环境关掉提示
  */

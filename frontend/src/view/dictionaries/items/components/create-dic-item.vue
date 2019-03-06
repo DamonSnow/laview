@@ -48,7 +48,7 @@
           type_id: 0,
           item_name: '',
           item_value: '',
-          sort: '',
+          sort: 0,
           comment: '',
         },
         ruleValidate: {
