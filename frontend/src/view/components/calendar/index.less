@@ -1,0 +1,179 @@
+@primary-color: #2D8cF0;
+.lunarFullCalendar {
+  min-width: 900px;
+  height: 100%;
+  background: #fff;
+  .top {
+    height: 100px;
+    h2 {
+      text-align: center;
+      font-size: 15px;
+    }
+    div {
+      font-size: 13px;
+    }
+  }
+  .full-calendar {
+    padding: 20px;
+    height: calc(~"100vh - 30px");
+
+    .fc-unthemed thead,
+    .fc-unthemed .fc-content,
+    .fc-unthemed th,
+    .fc-unthemed td,
+    .fc-unthemed tbody,
+    .fc-unthemed .fc-row,
+    .fc-unthemed .fc-list-view,
+    .fc-unthemed .fc-popover,
+    .fc-unthemed .fc-divider,
+    .fc-unthemed .fc-list-heading td {
+      border-color: #eaecf1;
+    }
+    .fc-header-toolbar {
+      height: 30px;
+      margin-bottom: 0;
+      line-height: 30px;
+      h2 {
+        font-size: 24px;
+        color: #000;
+      }
+    }
+    .fc-button {
+      height: 30px;
+      background: #fff;
+      border-color: #fff;
+      box-shadow: none;
+      padding: 0;
+    }
+    .fc-today-button {
+      font-size: 15px;
+      color: @primary-color;
+    }
+    .fc-show-button,
+    .fc-hide-button {
+      position: relative;
+      width: 80px;
+      border: 1px solid #bbbfcd;
+      border-radius: 10px;
+      font-size: 15px;
+      color: #000;
+    }
+    .fc-next-button,
+    .fc-prev-button {
+      color: #7d8292;
+    }
+    .fc-button-group {
+      margin-left: 20px;
+      font-size: 15px;
+      button {
+        width: 80px;
+        color: #000;
+        border: 1px solid #bbbfcd;
+      }
+      button:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      button:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+      .fc-state-active {
+        background: @primary-color;
+        color: #fff;
+        text-shadow: none;
+      }
+    }
+    .fc-agendaDay-view,
+    .fc-month-view,
+    .fc-agendaWeek-view {
+      .fc-widget-content {
+        .fc-sun,
+        .fc-sat {
+          background: rgba(245, 246, 248, 0.6);
+        }
+        .fc-day-number {
+          font-size: 15px;
+          letter-spacing: 0;
+          line-height: 13px;
+          float: left;
+        }
+        .fc-day-top {
+          padding: 15px 12px 0 12px;
+        }
+        .fc-day-cnTerm,
+        .fc-day-cnDate {
+          font-size: 12px;
+          color: #7d8292;
+          float: right;
+        }
+        .fc-more {
+          font-size: 12px;
+          color: #7d8292;
+        }
+        .fc-event {
+          cursor: pointer;
+          font-size: 12px;
+          color: #000;
+          background-color: rgba(0, 0, 0, 0.15) !important;
+          border: 1px solid rgba(0, 0, 0, 0.15) !important;
+          border-left: 2px solid rgba(0, 0, 0, 0.15) !important;
+          border-radius: 0;
+        }
+        .fc-day-grid-event {
+          padding: 1px 0 1px 5px;
+        }
+      }
+    }
+    .fc-agendaWeek-view,
+    .fc-agendaDay-view {
+      .fc-axis {
+        font-size: 15px;
+      }
+      .fc-title {
+        font-size: 15px;
+        color: @primary-color;
+      }
+    }
+    .fc-month-view {
+      .fc-event {
+        &.fc-not-start {
+          border-left: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+      }
+    }
+    .fc-agendaDay-view {
+      .fc-head {
+        table {
+          margin: 15px 0;
+        }
+        .fc-day-header {
+          display: none;
+        }
+      }
+    }
+    .fc-head {
+      .fc-day-header,
+      .fc-widget-header,
+      .fc-head-container {
+        border-top-color: #fff;
+        border-left-color: #fff;
+        border-right-color: #fff;
+      }
+      table {
+        margin: 10px 0 15px 0;
+        font-size: 15px;
+        color: #000;
+      }
+    }
+
+  }
+}
+
+.tip {
+  color: @primary-color;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+

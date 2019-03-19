@@ -128,15 +128,15 @@ export default [
         hideInMenu: true
     },
     children: [
-        {
-            path: 'message_page',
-            name: 'message_page',
-            meta: {
-                icon: 'md-notifications',
-                title: '消息中心'
-            },
-            component: () => import('@/view/single-page/message/index.vue')
-        }
+      {
+        path: 'message_page',
+        name: 'message_page',
+        meta: {
+          icon: 'md-notifications',
+          title: '消息中心'
+        },
+        component: () => import('@/view/single-page/message/index.vue')
+      },
     ]
   },
   {
@@ -148,17 +148,24 @@ export default [
     },
     component: Main,
     children: [
-
-        {
-            path: 'org_tree_page',
-            name: 'org_tree_page',
-            meta: {
-                icon: 'ios-people',
-                title: '组织结构树'
-            },
-            component: () => import('@/view/components/org-tree')
+      {
+        path: 'org_tree_page',
+        name: 'org_tree_page',
+        meta: {
+          icon: 'ios-people',
+          title: '组织结构树'
         },
-
+        component: () => import('@/view/components/org-tree')
+      },
+      {
+        path: 'calendar',
+        name: 'calendar',
+        meta: {
+          icon: 'ios-people',
+          title: '日历'
+        },
+        component: () => import('@/view/components/calendar')
+      },
     ]
   },
   {

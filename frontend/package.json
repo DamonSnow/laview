@@ -28,6 +28,7 @@
     "v-org-tree": "^1.0.6",
     "vue": "^2.6.8",
     "vue-i18n": "^7.8.1",
+    "vue-lunar-full-calendar": "^1.2.2",
     "vue-router": "^3.0.2",
     "vuedraggable": "^2.19.1",
     "vuex": "^3.1.0",
