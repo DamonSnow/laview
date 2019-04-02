@@ -1,9 +1,16 @@
 <template>
     <div class="lunarFullCalendar">
+        <!-- 新增计划modal -->
+        <createSchedule ref="createSchedule" :addModal="addModal" :calendarList="calendarList" @newEvent="newEvent"></createSchedule>
+        <!-- 显示计划详情modal -->
+        <showSchedule ref="showSchedule" :addModal="addModal" :calendarList="calendarList" @delEvent="delEvent" @editEvent="editEvent"></showSchedule>
+        <!-- 更新计划modal -->
+        <editSchedule ref="editSchedule" :addModal="addModal" :calendarList="calendarList" @updEvent="updEvent"></editSchedule>
         <div class="full-calendar">
             <lunar-full-calendar :events="events"
                                  ref="calendar"
                                  @event-selected="eventSelected"
+                                 @event-drop="eventDrop"
                                  :config="config"
                                  @day-click="dayClick"></lunar-full-calendar>
         </div>
@@ -12,48 +19,27 @@
 </template>
 <script>
     import { LunarFullCalendar } from 'vue-lunar-full-calendar'
+    import { calendars,getSchedules,updScheTime,delSchedule } from '@/api/schedule'
+    import moment from 'moment'
+    import createSchedule from './components/create-shcedule.vue'
+    import showSchedule from './components/show-shcedule.vue'
+    import editSchedule from './components/edit-shcedule.vue'
     import './index.less'
     export default {
+        name: 'myLunarCalendar',
+        components: {
+            LunarFullCalendar,
+            createSchedule,
+            showSchedule,
+            editSchedule
+        },
         data: function () {
             let self = this
             return {
-                events: [
-                    {
-                        id: 1,
-                        title: '数据1',
-                        allDay: true,
-                        start: new Date()
-                    },
-                    {
-                        id: 2,
-                        title: '数据2',
-                        start: new Date().getTime() + 24 * 60 * 60 * 1000,
-                        end: new Date().getTime() + 2 * 24 * 60 * 60 * 1000
-                    },
-                    {
-                        id: 3,
-                        title: '数据3',
-                        start: new Date().getTime() - 3 * 24 * 60 * 60 * 1000
-                    },
-                    {
-                        id: 4,
-                        title: '数据4（增加中国农历、24节气和节假日的问题）',
-                        start: new Date(),
-                        end: new Date().getTime() + 30 * 24 * 60 * 60 * 1000
-                    },
-                    {
-                        id: 5,
-                        title: '数据5（Increase the functions of Chinese lunar calendar, 24 solar terms and holidays）',
-                        start: new Date(),
-                        end: new Date().getTime() + 30 * 24 * 60 * 60 * 1000
-                    },
-                    {
-                        id: 6,
-                        title: '数据6（增加中国农历、24节气和节假日的问题Increase the functions of Chinese lunar calendar, 24 solar terms and holidays）',
-                        start: new Date() - 30 * 24 * 60 * 60 * 1000,
-                        end: new Date().getTime()
-                    }
-                ],
+                addModal: false,
+                view: 'month',
+                calendarList: [],
+                events: [],
                 config: {
                     // lunarCalendar
                     // Control whether the Chinese calendar shows true, unrealistic flase, default true.（lunarCalendar控制是否显示中国农历、显示的为true，隐藏为flase，默认为true）
@@ -80,6 +66,7 @@
                     allDayText: '全天', // agenda视图下all-day的显示文本
                     timezone: 'local', // 时区默认本地的
                     slotLabelFormat: 'HH:mm', // 周视图和日视同的左侧时间显示
+                    nextDayThreshold: 0,
                     viewRender (view, element) {
                         self.viewRender(view, element)
                     },
@@ -118,8 +105,10 @@
                 }
             }
         },
-        components: {
-            LunarFullCalendar
+        mounted: function () {
+            calendars().then(res => {
+                this.calendarList = res.data.data
+            })
         },
         methods: {
             // 注释的是功能是可以修改对应的功能值属性，比如设置  eventLimit为 false
@@ -127,14 +116,116 @@
             //      eventLimit :false
             //  })
             dayClick (date, jsEvent, view) { // 点击当天的事件
-                alert('农历数据：' + JSON.stringify(window.lunar(date._d)))
-                console.log(date, jsEvent, 'dayClick')
+//                alert('农历数据：' + JSON.stringify(window.lunar(date._d)))
+//                this.$refs.calendar.fireMethod('removeEvents',[6]);
+//                console.log(date, jsEvent, 'dayClick')
+
+                this.$refs.createSchedule.open(moment(date._d).format('YYYY-MM-DD HH:mm:ss'),moment(date._d).add('1','h').format('YYYY-MM-DD HH:mm:ss'));
             },
             eventSelected (event, jsEvent, view) { // 选中事件
-                console.log(event, jsEvent, 'eventSelected')
+                console.log(event, jsEvent, view)
+                this.$refs.showSchedule.open(event);
             },
             viewRender (view, element) {
                 console.log(view, element, 'viewRender')
+                this.view = view.type;
+                this.setRenderRangeText(moment(view.start).format('YYYY-MM-DD HH:mm:ss'), moment(view.end).format('YYYY-MM-DD HH:mm:ss'));
+            },
+//            eventCreate(start, end, jsEvent, view, resource) {
+//                console.log(start, end, jsEvent, view, resource)
+//                this.events.forEach(item => {
+//                    if(parseInt(item.id) == 5) {
+//                        item.title = 'test';
+//                        item.start = '2019-04-02 23:00:00';
+//                        item.end = '2019-04-03 15:00:00';
+//                    }
+//                })
+//                this.$refs.calendar.$emit('refetch-events')
+//            },
+            eventDrop(event) {
+                console.log(event);
+            },
+            setRenderRangeText(start, end) {
+                let condition = {start: start,end: end,calendar_id: null}
+                let viewName = this.view;
+                let html = [];
+                if (viewName === 'month') {
+                    console.log('month')
+                } else if (viewName === 'agendaWeek') {
+                    console.log('week')
+                } else {
+                    console.log('day')
+                }
+                this.axiosGetSchedules(condition);
+            },
+            axiosGetSchedules (condition) {
+                let scheduleData = [];
+                getSchedules(condition).then(res => {
+                    console.log(res.data)
+                    res.data.data.forEach(item => {
+                        scheduleData.push({
+                            id: item.id,
+                            calendarId: String(item.calendarId),
+                            title: item.title,
+                            body: item.body,
+                            category: item.category,
+                            dueDateClass: '',
+                            start: item.start,
+                            end: item.end,
+                            backgroundColor: item.backgroundColor,
+                            borderColor: item.borderColor,
+                            textColor: '#FFFFFF'
+                        })
+                    })
+                    this.events = scheduleData;
+                })
+            },
+            newEvent(event) {
+                event.backgroundColor = 'yellow';
+                event.borderColor = 'yellow';
+                event.textColor = '#FFFFFF';
+                this.calendarList.forEach(item => {
+                    if(parseInt(item.id) === parseInt(event.calendar_id)) {
+                        event.backgroundColor = item.bgColor;
+                        event.borderColor = item.borderColor;
+                        event.textColor = '#FFFFFF';
+                    }
+                })
+                console.log(event);
+                this.events.push(event);
+            },
+            delEvent(event) {
+                let _this = this;
+                delSchedule(event.id).then(res => {
+                    if (parseInt(res.data.code) === 200) {
+                        _this.$refs.calendar.fireMethod('removeEvents',[event.id]);
+                    } else {
+                        _this.$Message.error(res.data.message);
+                    }
+                }).catch(function (error) {
+                    _this.$Message.error(error.response.data.message);
+                })
+//                this.$refs.calendar.fireMethod('removeEvents',[event.id]);
+            },
+            editEvent(event) {
+                this.$refs.editSchedule.open(event);
+            },
+            updEvent(event) {
+                console.log(event)
+                event.backgroundColor = 'yellow';
+                event.borderColor = 'yellow';
+                event.textColor = '#FFFFFF';
+                this.calendarList.forEach(item => {
+                    if(parseInt(item.id) === parseInt(event.calendar_id)) {
+                        event.backgroundColor = item.bgColor;
+                        event.borderColor = item.borderColor;
+                        event.textColor = '#FFFFFF';
+                    }
+                })
+                this.events = this.events.filter(item => {
+                    return parseInt(item.id) != parseInt(event.id)
+                })
+                this.events.push(event);
             }
         }
     }

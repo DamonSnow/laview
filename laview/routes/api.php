@@ -50,6 +50,12 @@ $api->version('v1', function ($api) {
         $api->get('message/count', 'App\Http\Controllers\Api\MessageController@count');
         //部门相关路由
         $api->resource('branches', 'App\Http\Controllers\Api\BranchController');
+
+        //计划相关路由
+        $api->resource('schedules', 'App\Http\Controllers\Api\ScheduleController');
+        $api->post('get_schedules', 'App\Http\Controllers\Api\ScheduleController@getSchedules');
+        $api->post('upd_schedule_time/{id}', 'App\Http\Controllers\Api\ScheduleController@updTimeRange');
+        $api->resource('calendars', 'App\Http\Controllers\Api\CalendarController');
     });
 
 
