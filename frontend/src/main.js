@@ -15,6 +15,7 @@ import './index.less'
 import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
+import formCreate from 'form-create'
 import 'v-org-tree/dist/v-org-tree.css'
 // 实际打包时应该不引入mock
 /* eslint-disable */
@@ -25,6 +26,7 @@ Vue.use(iView, {
 })
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
+Vue.use(formCreate)
 /**
  * @description 注册admin内置插件
  */

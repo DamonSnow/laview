@@ -166,6 +166,15 @@ export default [
         },
         component: () => import('@/view/components/calendar')
       },
+      {
+        path: 'form_creator',
+        name: 'form creator',
+        meta: {
+          icon: 'ios-people',
+          title: '表单构建器'
+        },
+        component: () => import('@/view/components/form-creator')
+      },
     ]
   },
   {

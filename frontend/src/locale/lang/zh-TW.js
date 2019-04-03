@@ -57,6 +57,7 @@ export default {
   'timeRange': '時間區間',
   'schedule-info': '計劃詳情',
   'update-schedule': '更新計劃',
+  'form creator': '表單生成器',
   components: '组件',
   count_to_page: '数字渐变',
   tables_page: '多功能表格',

@@ -58,6 +58,7 @@ export default {
   'timeRange': 'Time Range',
   'schedule-info': 'Schedule Information',
   'update-schedule': 'Update Schedule',
+  'form creator': 'Form Creator',
   components: 'Components',
   count_to_page: 'Count-to',
   tables_page: 'Table',
