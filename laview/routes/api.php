@@ -56,6 +56,10 @@ $api->version('v1', function ($api) {
         $api->post('get_schedules', 'App\Http\Controllers\Api\ScheduleController@getSchedules');
         $api->post('upd_schedule_time/{id}', 'App\Http\Controllers\Api\ScheduleController@updTimeRange');
         $api->resource('calendars', 'App\Http\Controllers\Api\CalendarController');
+
+        //表单编辑器相关路由
+        $api->post('form_data/{id}', 'App\Http\Controllers\Api\FormDataController@store');
+        $api->get('form_data/{id}', 'App\Http\Controllers\Api\FormDataController@show');
     });
 
 

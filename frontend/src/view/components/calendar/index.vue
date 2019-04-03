@@ -111,14 +111,9 @@
             })
         },
         methods: {
-            // 注释的是功能是可以修改对应的功能值属性，比如设置  eventLimit为 false
-            //  this.$refs.calendar.fireMethod('option',{
-            //      eventLimit :false
-            //  })
+
             dayClick (date, jsEvent, view) { // 点击当天的事件
-//                alert('农历数据：' + JSON.stringify(window.lunar(date._d)))
-//                this.$refs.calendar.fireMethod('removeEvents',[6]);
-//                console.log(date, jsEvent, 'dayClick')
+
 
                 this.$refs.createSchedule.open(moment(date._d).format('YYYY-MM-DD HH:mm:ss'),moment(date._d).add('1','h').format('YYYY-MM-DD HH:mm:ss'));
             },
@@ -131,17 +126,6 @@
                 this.view = view.type;
                 this.setRenderRangeText(moment(view.start).format('YYYY-MM-DD HH:mm:ss'), moment(view.end).format('YYYY-MM-DD HH:mm:ss'));
             },
-//            eventCreate(start, end, jsEvent, view, resource) {
-//                console.log(start, end, jsEvent, view, resource)
-//                this.events.forEach(item => {
-//                    if(parseInt(item.id) == 5) {
-//                        item.title = 'test';
-//                        item.start = '2019-04-02 23:00:00';
-//                        item.end = '2019-04-03 15:00:00';
-//                    }
-//                })
-//                this.$refs.calendar.$emit('refetch-events')
-//            },
             eventDrop(event) {
                 console.log(event);
             },
@@ -205,7 +189,6 @@
                 }).catch(function (error) {
                     _this.$Message.error(error.response.data.message);
                 })
-//                this.$refs.calendar.fireMethod('removeEvents',[event.id]);
             },
             editEvent(event) {
                 this.$refs.editSchedule.open(event);
