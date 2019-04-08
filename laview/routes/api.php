@@ -58,8 +58,10 @@ $api->version('v1', function ($api) {
         $api->resource('calendars', 'App\Http\Controllers\Api\CalendarController');
 
         //表单编辑器相关路由
+        $api->resource('forms', 'App\Http\Controllers\Api\FormController');
         $api->post('form_data/{id}', 'App\Http\Controllers\Api\FormDataController@store');
         $api->get('form_data/{id}', 'App\Http\Controllers\Api\FormDataController@show');
+        $api->get('toggle_form/{id}', 'App\Http\Controllers\Api\FormController@toggle');
     });
 
 

@@ -173,7 +173,7 @@ export default [
           icon: 'ios-people',
           title: '表单构建器'
         },
-        component: () => import('@/view/components/form-creator')
+        component: () => import('@/view/form')
       },
     ]
   },
