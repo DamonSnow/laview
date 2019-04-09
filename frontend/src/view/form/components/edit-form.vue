@@ -1,30 +1,25 @@
 <template>
   <div>
     <Modal
-      ref="editDicItem"
+      ref="editForm"
       v-model="showModal"
       title="Title"
       :loading="loading"
-      @on-ok="handleSubmit('editDicItemForm')"
-      @on-cancel="handleReset('editDicItemForm')">
-      <p slot="header">{{ $t('edit-dictionary-item') }}</p>
-      <Form ref="editDicItemForm" :model="dictionaryItem" :rules="rules" :label-width="120">
-        <FormItem :label='$t("dictionary_type")' prop="type_id">
-          <Select v-model="dictionaryItem.type_id">
-            <Option v-for="dicType in dicTypes" :value='dicType.id' :key='dicType.id'>{{ dicType.dic_name }}</Option>
-          </Select>
+      @on-ok="handleSubmit('editFormForm')"
+      @on-cancel="handleReset('editFormForm')">
+      <p slot="header">{{ $t('edit-form-info') }}</p>
+      <Form ref="editFormForm" :model="form" :rules="rules" :label-width="120">
+        <FormItem :label='$t("Form Code")'>
+          <Input v-model="form.form_code" disabled></Input>
         </FormItem>
-        <FormItem :label='$t("item_name")' prop="item_name">
-          <Input v-model="dictionaryItem.item_name" :placeholder='$t("Enter dictionary item name")'></Input>
+        <FormItem :label='$t("Form Name")' prop="form_name">
+          <Input v-model="form.form_name"></Input>
         </FormItem>
-        <FormItem :label='$t("item_value")' prop="item_value">
-          <Input v-model="dictionaryItem.item_value" :placeholder='$t("Enter dictionary item value")'></Input>
-        </FormItem>
-        <FormItem :label='$t("sort")' prop="sort">
-          <InputNumber v-model="dictionaryItem.sort"></InputNumber>
+        <FormItem :label='$t("Model")' prop="model">
+          <Input v-model="form.model"></Input>
         </FormItem>
         <FormItem :label='$t("comment")' prop="comment">
-          <Input v-model="dictionaryItem.comment"></Input>
+          <Input v-model="form.comment"></Input>
         </FormItem>
       </Form>
     </Modal>
@@ -32,37 +27,26 @@
 </template>
 
 <script>
-  import { updateDicItem } from '@/api/dictionary_item'
+  import { updateForm } from '@/api/form'
   export default {
-    name: 'edit-dic-item',
+    name: 'edit-form',
     props: {
       addModal: Boolean,
-      dicTypes: Array,
     },
     data() {
       return {
         showModal: this.addModal,
         loading: false,
-        dictionaryItem: {
-          type_id: '',
-          item_name: '',
-          item_value: '',
-          sort: 1,
+        form: {
+          form_code: '',
+          form_name: '',
+          model: '',
           comment: '',
         },
-        dictionaryItemId: 0,
+        formId: 0,
         rules: {
-          type_id: [
-            { required: true, message: 'The dictionary type cannot be empty', trigger: 'change' }
-          ],
-          item_name: [
-            { required: true,  message: 'The item name cannot be empty', trigger: 'blur' },
-          ],
-          item_value: [
+          form_name: [
             { required: true,  message: 'The item value cannot be empty', trigger: 'blur' },
-          ],
-          sort: [
-            { required: true, type: 'number', min:1, message: 'The sort cannot be empty', trigger: 'blur' },
           ],
         },
       }
@@ -73,27 +57,26 @@
 
         _this.$refs[name].validate((valid) => {
           if (valid) {
-            updateDicItem(_this.dictionaryItemId, _this.dictionaryItem).then(res => {
-              this.$Message.success('更新数据字典项目成功');
+            updateForm(_this.formId, _this.form).then(res => {
+              this.$Message.success('更新表单信息成功');
               _this.$emit('refreshTable', false)
             })
           } else {
-            _this.$refs.editDicItem.visible = true;
+            _this.$refs.editForm.visible = true;
             _this.showModal = true;
           }
         })
       },
       handleReset (name) {
-        this.$refs[name].resetFields();
+
       },
       open (row) {
         let _this = this;
-        _this.dictionaryItemId = row.id;
-        _this.dictionaryItem.type_id = row.type_id.toString();
-        _this.dictionaryItem.item_name = row.item_name;
-        _this.dictionaryItem.item_value = row.item_value;
-        _this.dictionaryItem.sort = parseInt(row.sort);
-        _this.dictionaryItem.comment = row.comment;
+        _this.formId = row.id;
+        _this.form.form_name = row.form_name;
+        _this.form.form_code = row.form_code;
+        _this.form.model = row.model;
+        _this.form.comment = row.comment;
         _this.showModal = true;
       }
     }

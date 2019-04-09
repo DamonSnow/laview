@@ -213,3 +213,32 @@ export const objEqual = (obj1, obj2) => {
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
 }
+
+export const string2Obj = (str) => {
+    return new Function('return ' + str + ';')()
+}
+
+export const obj2String = (o) => {
+    let r = [];
+    if (typeof o == "string") {
+        return "\"" + o.replace(/([\'\"\\])/g, "\\$1").replace(/(\n)/g, "\\n").replace(/(\r)/g, "\\r").replace(/(\t)/g, "\\t") + "\"";
+    }
+    if (typeof o == "object") {
+        if (!o.sort) {
+            for (let i in o) {
+                r.push(i + ":" + obj2string(o[i]));
+            }
+            if (!!document.all && !/^\n?function\s*toString\(\)\s*\{\n?\s*\[native code\]\n?\s*\}\n?\s*$/.test(o.toString)) {
+                r.push("toString:" + o.toString.toString());
+            }
+            r = "{" + r.join() + "}";
+        } else {
+            for (let i = 0; i < o.length; i++) {
+                r.push(obj2string(o[i]))
+            }
+            r = "[" + r.join() + "]";
+        }
+        return r;
+    }
+    return o.toString();
+}

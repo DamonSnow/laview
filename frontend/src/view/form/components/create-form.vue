@@ -30,7 +30,7 @@
 <script>
   import { addForm } from '@/api/form'
   export default {
-    name: 'create-dic-type',
+    name: 'create-form',
     props: {
       addModal: Boolean,
     },

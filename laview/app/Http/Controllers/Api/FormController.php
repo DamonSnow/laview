@@ -24,13 +24,35 @@ class FormController extends ApiController
             'form_code' => 'required|unique:forms',
         ]);
         if ($validator->fails()) {
-            return failed_response($validator->errors()->toArray(), 'error', 1001);
+            return failed_response($validator->errors()->toArray(), 'error', 1101);
         }
         DB::beginTransaction();
         try {
             $form = Form::create($request->all());
             DB::commit();
             return $this->success($form, 'success');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $msg = $e->getMessage();
+            $code = $e->getCode();
+            return $this->setStatusCode($code)->failed($msg);
+        }
+    }
+
+    public function update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'form_name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return failed_response($validator->errors()->toArray(), 'error', 1102);
+        }
+        DB::beginTransaction();
+        try {
+            $form = Form::find($id);
+            $form->update($request->all());
+            DB::commit();
+            return $this->success('update','success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();

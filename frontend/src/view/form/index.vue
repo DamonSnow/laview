@@ -1,8 +1,10 @@
 <template>
   <div>
-    <!-- 新增字典项目modal -->
+    <!-- 新增表单modal -->
     <createForm ref="createForm" :addModal="addModal" @refreshTable="getData"></createForm>
-    <!--<editForm ref="editForm" :addModal="addModal" :dicTypes="dicTypes" @refreshTable="getData"></editForm>-->
+    <editForm ref="editForm" :addModal="addModal" @refreshTable="getData"></editForm>
+    <formModel ref="formModel" :addModal="addModal"></formModel>
+    <formPreview ref="formPreview" :addModal="addModal"></formPreview>
     <Card>
       <p slot="title">
         <Icon type="md-card"></Icon>
@@ -29,11 +31,15 @@
   import { formLists, toggleForm } from '@/api/form'
 
   import createForm from './components/create-form.vue'
-//  import editForm from './components/edit-dic-item.vue'
+  import editForm from './components/edit-form.vue'
+  import formModel from './components/form-model.vue'
+  import formPreview from './components/form-preview.vue'
   export default {
     components: {
       createForm,
-//      editForm
+      editForm,
+      formModel,
+      formPreview
     },
     data () {
       return {
@@ -115,14 +121,43 @@
                 h('Button', {
                   props: {
                     type : 'info',
+                    size: 'small',
+                    disabled: !parseInt(params.row.version)
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.openPreview(params.row)//打开预览页
+                    }
+                  }
+                },'预览'),
+                h('Button', {
+                    props: {
+                      type : 'info',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.openEditInfo(params.row)//打开编辑信息页
+                      }
+                    }
+                },this.$t('edit')),
+                h('Button', {
+                  props: {
+                    type : 'info',
                     size: 'small'
                   },
                   on: {
                     click: () => {
-                      this.openEditForm(params.row)//打开编辑页
+                      this.openEditForm(params.row)//打开表单编辑页
                     }
                   }
-                },this.$t('edit'))
+                },'表单')
               ]);
             },
           }
@@ -158,8 +193,14 @@
       openCreateForm () {
         this.$refs.createForm.open();
       },
-      openEditForm (row) {
+      openEditInfo (row) {
         this.$refs.editForm.open(row);
+      },
+      openEditForm (row) {
+        this.$refs.formModel.open(row);
+      },
+      openPreview (row) {
+        this.$refs.formPreview.open(row);
       }
     },
     mounted: function () {

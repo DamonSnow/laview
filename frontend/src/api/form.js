@@ -20,6 +20,15 @@ export const addForm = (form) => {
     })
 }
 
+export const updateForm = (id, form) => {
+    const data = Object.assign({},form);
+    return axios.request({
+        url: `forms/${id}`,
+        data,
+        method: 'put'
+    })
+}
+
 export const toggleForm = (id, value) => {
     return axios.request({
         url: `toggle_form/${id}`,
@@ -37,10 +46,10 @@ export const getFormData = (id) => {
     })
 }
 
-export const addFormData = (id, form_data) => {
+export const saveFormData = (id, version, form_data) => {
     const data = Object.assign({},form_data);
     return axios.request({
-        url: `form_data/${id}`,
+        url: `form_data/${id}/${version}`,
         data,
         method: 'post'
     })

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Form;
 use App\Models\FormData;
 use Illuminate\Http\Request;
 
@@ -17,14 +18,14 @@ class FormDataController extends ApiController
         return $this->success($form);
     }
 
-    public function store($id, Request $request)
+    public function store($id, $version, Request $request)
     {
 //        var_dump($request->input('data'));
         try {
-            $formData = FormData::create([
-                'form_id' => $id,
-                'item_data' => serialize($request->input('data'))
-            ]);
+            $formData = FormData::updateOrCreate(['form_id'=> $id],['item_data' => serialize($request->input('data'))]);
+            $form = Form::find($id);
+            $form->version = $version;
+            $form->save();
             return $this->success($formData, 'success');
         } catch (\Exception $e) {
             $msg = $e->getMessage();
