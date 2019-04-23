@@ -37,9 +37,12 @@ $api->version('v1', function ($api) {
         //权限相关
         $api->resource('permissions', 'App\Http\Controllers\Api\PermissionsController');
         $api->get('all_permissions', 'App\Http\Controllers\Api\PermissionsController@allPermissions');
+        $api->get('children_permissions/{id}', 'App\Http\Controllers\Api\PermissionsController@children');
         //角色相关
         $api->resource('roles', 'App\Http\Controllers\Api\RoleController');
         $api->get('all_roles', 'App\Http\Controllers\Api\RoleController@allRoles');
+        $api->get('permissionByRoleId/{id}', 'App\Http\Controllers\Api\RoleController@permissionByRoleId');
+        $api->post('updRolePermission/{id}', 'App\Http\Controllers\Api\RoleController@updRolePermission');
         //系统字典相关
         $api->get('all_dic_types', 'App\Http\Controllers\Api\DictionaryTypeController@allDicTypes');
         $api->resource('dic_types', 'App\Http\Controllers\Api\DictionaryTypeController', ['only' => ['index', 'store', 'update']]);

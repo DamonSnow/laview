@@ -11,11 +11,15 @@ export const permissions = (page, size) => {
   })
 }
 
-export const addPermission = (name, comment) => {
-  let data = {
-    name,
-    comment
-  };
+export const getChildrenPermissions = (parent_id) => {
+    return axios.request({
+        url: `children_permissions/${parent_id}`,
+        method: 'get'
+    })
+}
+
+export const addPermission = (permission) => {
+  const data = Object.assign({},permission);
   return axios.request({
     url: 'permissions',
     data,

@@ -11,12 +11,8 @@ export const roles = (page, size) => {
   })
 }
 
-export const addRole = (name, permissions, comment) => {
-  let data = {
-    name,
-    permissions,
-    comment
-  };
+export const addRole = (role) => {
+  const data = Object.assign({},role);
   return axios.request({
     url: 'roles',
     data,
@@ -38,12 +34,8 @@ export const allRoles = () => {
   })
 }
 
-export const updateRole = (id, name, permissions, comment) => {
-  let data = {
-    name,
-    permissions,
-    comment
-  };
+export const updateRole = (id, role) => {
+  const data = Object.assign({},role);
   return axios.request({
     url: `roles/${id}`,
     data,
@@ -55,5 +47,23 @@ export const deleteRole = (id) => {
     return axios.request({
         url: `roles/${id}`,
         method: 'delete'
+    })
+}
+
+export const permissionByRoleId = (id) => {
+    return axios.request({
+        url: `permissionByRoleId/${id}`,
+        method: 'get'
+    })
+}
+
+export const updRolePermission = (id, permissions) => {
+    let data = {
+        permissions,
+    };
+    return axios.request({
+        url: `updRolePermission/${id}`,
+        data,
+        method: 'post'
     })
 }

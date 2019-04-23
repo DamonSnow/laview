@@ -13,13 +13,7 @@
         <FormItem :label='$t("role")' prop="name">
           <Input v-model="role.name" :placeholder='$t("Enter role name")'></Input>
         </FormItem>
-        <FormItem :label='$t("auth")' prop="permissions">
-          <Transfer
-            :data="rights"
-            :target-keys="role.permissions"
-            :render-format="permission_rendor"
-            @on-change="handlePermission"></Transfer>
-        </FormItem>
+
         <FormItem :label='$t("comment")'>
             <Input v-model="role.comment"></Input>
         </FormItem>
@@ -35,7 +29,6 @@
     name: 'create-role-madal',
     props: {
       addModal: Boolean,
-      rights: Array
     },
     data () {
       return {
@@ -43,15 +36,11 @@
         loading: false,
         role: {
           name: '',
-          permissions: [],
           comment: ''
         },
         ruleValidate: {
           name: [
             { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-          ],
-          permissions: [
-            { required: true, type: 'array', min: 1, message: 'Choose at least one hobby', trigger: 'change' },
           ],
         },
       }
@@ -61,7 +50,7 @@
         let _this = this;
         this.$refs[name].validate((valid) => {
           if (valid) {
-            addRole(_this.role.name, _this.role.permissions, _this.role.comment).then(res => {
+            addRole(_this.role).then(res => {
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('新增角色成功');
                 _this.$emit('refreshTable',false)
@@ -86,13 +75,6 @@
       },
       handleReset (name) {
         this.$refs[name].resetFields();
-      },
-      handlePermission (newTargetKeys, direction, moveKeys) {
-
-        this.role.permissions = newTargetKeys;
-      },
-      permission_rendor (item) {
-        return item.label;
       },
       open () {
         this.showModal = true

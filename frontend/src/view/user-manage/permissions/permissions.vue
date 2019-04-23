@@ -11,13 +11,22 @@
         {{ $t('permissions-list') }}
       </p>
       <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-permission') }}</Button>
-      <Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>
-
+      <!--<Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>-->
+      <TreeTable
+              :data="data"
+              :columns="columns"
+              @on-load-children="onloadChildren"
+              @on-remove-children="onRemoveChildren"
+              @on-checked-change="onCheckedChange"
+              @on-toggle-expand="onToggleExpand"
+      />
       <div style="text-align: center;margin: 16px 0">
         <Page
           :total="total"
           :current.sync="current"
           show-sizer
+          show-total
+          show-elevator
           @on-change="getData"
           @on-page-size-change="handleChangeSize"
         ></Page>
@@ -28,13 +37,15 @@
 </template>
 
 <script>
-  import { permissions, addPermission, deletePermission } from '@/api/permissions'
+  import { permissions, addPermission, deletePermission, getChildrenPermissions } from '@/api/permissions'
+  import TreeTable from "_c/treetable";
   import createModel from './components/create_form.vue'
   import editModel from './components/edit-form.vue'
   export default {
     components: {
       createModel,
-      editModel
+      editModel,
+      TreeTable
     },
     data () {
       return {
@@ -48,8 +59,20 @@
             }
           },
           {
+            type: 'treeNode',
             title: this.$t('auth'),
             key: 'name',
+          },
+          {
+              title: this.$t('permission_type'),
+              key: 'type',
+              render: (h, params) => {
+                  let dic = {
+                      1: '菜单',
+                      2: '按钮',
+                  };
+                  return h('div', dic[params.row.type]);
+              }
           },
           {
             title: this.$t('comment'),
@@ -67,9 +90,23 @@
                   },
                   on: {
                     click: () => {
-                      this.openEditForm(params.row)//打开编辑页
+                      this.openCreateForm(params.row.id)//打开编辑页
                     }
                   }
+                },this.$t('add')),
+                h('Button', {
+                    props: {
+                        type : 'info',
+                        size: 'small'
+                    },
+                    style: {
+                        margin: '0 0 0 5px'
+                    },
+                    on: {
+                        click: () => {
+                            this.openEditForm(params.row)//打开编辑页
+                        }
+                    }
                 },this.$t('edit')),
                 h('Poptip',{
                   props: {
@@ -143,11 +180,29 @@
           this.getData();
         })
       },
-      openCreateForm (val) {
-        this.$refs.createPermission.open();
+      openCreateForm (parent_id = 0) {
+        this.$refs.createPermission.open(parent_id);
       },
       openEditForm (row) {
-          this.$refs.editPermission.open(row);
+        this.$refs.editPermission.open(row);
+      },
+      onToggleExpand(row, index, isExpand) {
+        this.data[index]._isExpand = isExpand;
+      },
+      onloadChildren(row, index, level, callback) {
+        let vm = this;
+        getChildrenPermissions(row.id).then(function(res) {
+            if (res.data.data) {
+                console.log(res.data.data)
+                vm.data = callback(index, level, res.data.data);
+            }
+        });
+      },
+      onRemoveChildren(startIndex, howmany) {
+          this.data.splice(startIndex, howmany);
+      },
+      onCheckedChange(checking) {
+        this.checking = checking;
       },
     },
     mounted: function () {

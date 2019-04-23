@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- 新增角色modal -->
-    <createRoleModal ref="createRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></createRoleModal>
+    <createRoleModal ref="createRole" :addModal="addModal" @refreshTable="getData"></createRoleModal>
     <!-- 编辑角色modal -->
-    <editRoleModal ref="editRole" :addModal="addModal" :rights="rights" @refreshTable="getData"></editRoleModal>
-
+    <editRoleModal ref="editRole" :addModal="addModal" @refreshTable="getData"></editRoleModal>
+    <DrawerPage v-model="isOpenDrawerPage" @refreshTable="getData" :role="editRole"/>
     <Card>
       <p slot="title">
         <Icon type="md-card"></Icon>
@@ -18,6 +18,8 @@
           :total="total"
           :current.sync="current"
           show-sizer
+          show-total
+          show-elevator
           @on-change="getData"
           @on-page-size-change="handleChangeSize"
         ></Page>
@@ -32,10 +34,12 @@
   import { allPermissions } from '@/api/permissions'
   import createRoleModal from './components/create-role-modal.vue'
   import editRoleModal from './components/edit-role-modal.vue'
+  import DrawerPage from './components/drawer.vue'
   export default {
     components: {
       createRoleModal,
-      editRoleModal
+      editRoleModal,
+      DrawerPage
     },
     data () {
       return {
@@ -53,25 +57,6 @@
             key: 'name',
           },
           {
-            title: this.$t('auth'),
-            key: 'permissions',
-            render: (h, params) => {
-
-              if(params.row.permissions.length > 0) {
-                let cols = params.row.permissions.map(item => {
-
-                  return h('Tag', {
-                    props: {
-                      color: 'success'
-                    }
-                  }, item.name);
-                })
-                return h('div', cols)
-              }
-
-            }
-          },
-          {
             title: this.$t('comment'),
             key: 'comment'
           },
@@ -81,9 +66,24 @@
             render: (h, params) => {
               return h('div',[
                 h('Button', {
+                    props: {
+                      type : 'info',
+                      size: 'small'
+                    },
+                    on: {
+                      click: () => {
+                        this.editRole = params.row
+                        this.isOpenDrawerPage = true;
+                      }
+                    }
+                },this.$t('auth')),
+                h('Button', {
                   props: {
                     type : 'info',
                     size: 'small'
+                  },
+                  style: {
+                    margin: '0 0 0 5px'
                   },
                   on: {
                     click: () => {
@@ -131,6 +131,11 @@
         current: 1,
         size: 10,
         addModal: false,
+        isOpenDrawerPage: false,
+        editRole: {
+            id: 0,
+            name: ''
+        },
         rights: [],
 
       }

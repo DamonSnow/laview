@@ -26,6 +26,7 @@
     "jsoneditor": "^5.32.1",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
+    "particlesjs": "^2.2.3",
     "simplemde": "^1.11.2",
     "sortablejs": "^1.8.3",
     "tree-table-vue": "^1.1.0",

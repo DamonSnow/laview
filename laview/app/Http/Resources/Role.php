@@ -24,7 +24,6 @@ class Role extends JsonResource
             'id'          => $this->id,
             'name'        => $this->name,
             'guard_name'  => $this->guard_name,
-            'permissions' => $this->permissions,
             'comment'     => $this->comment,
             'created_at'  => $this->created_at,
         ];

@@ -12,6 +12,12 @@
         <FormItem :label="$t('auth')" prop="name">
           <Input v-model="permission.name" :placeholder='$t("Enter Permission name")'></Input>
         </FormItem>
+        <FormItem :label='$t("permission_type")' prop="type">
+          <Select v-model="permission.type">
+            <Option value="1">菜单</Option>
+            <Option value="2">按钮</Option>
+          </Select>
+        </FormItem>
         <FormItem :label="$t('comment')">
           <Input v-model="permission.comment"></Input>
         </FormItem>
@@ -33,6 +39,8 @@
         loading: false,
         permission: {
           name: '',
+          parent_id: 0,
+          type: 1,
           comment: ''
         },
 
@@ -50,7 +58,7 @@
 
         this.$refs[name].validate((valid) => {
           if (valid) {
-            addPermission(this.permission.name, this.permission.comment).then(res => {
+            addPermission(this.permission).then(res => {
               if(parseInt(res.data.code) === 200) {
                 this.$Message.success('新增权限成功');
                 _this.$emit('refreshTable',false)
@@ -77,7 +85,8 @@
 //            _this.showAddModel = false;
 //            _this.$emit('showModel',false)
       },
-      open () {
+      open (parent_id) {
+        this.permission.parent_id = parent_id;
         this.showModal = true
       }
     }

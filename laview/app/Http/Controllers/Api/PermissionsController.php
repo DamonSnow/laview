@@ -24,7 +24,7 @@ class PermissionsController extends ApiController
 
     public function index()
     {
-        $permissions = new Permission();
+        $permissions = Permission::where('parent_id', '=', 0);
         return PermissionResource::collection($permissions->paginate(Input::get('size') ?: 20));
     }
 
@@ -37,7 +37,12 @@ class PermissionsController extends ApiController
             return failed_response($validator->errors()->toArray(), 'error', 1001);
         }
         try {
-            $permission = Permission::create(['name' => $request->input('name'), 'guard_name' => 'api', 'comment' => $request->input('comment')]);
+            $permission = Permission::create([
+                'name'       => $request->input('name'),
+                'parent_id'  => $request->input('parent_id'),
+                'type'       => $request->input('type'),
+                'guard_name' => 'api', 'comment' => $request->input('comment'),
+            ]);
             return $this->success($permission, 'success');
         } catch (\Exception $e) {
             $msg = $e->getMessage();
@@ -52,10 +57,16 @@ class PermissionsController extends ApiController
         return PermissionResource::collection($permissions->all());
     }
 
+    public function children($id)
+    {
+        $permissions = Permission::where('parent_id', '=', $id)->get();
+        return PermissionResource::collection($permissions);
+    }
+
     public function show($id)
     {
         $permission = Permission::find($id);
-        return $this->success($permission,'success');
+        return $this->success($permission, 'success');
     }
 
     public function update($id, Request $request)
@@ -69,11 +80,11 @@ class PermissionsController extends ApiController
         DB::beginTransaction();
         try {
             $permission = Permission::find($id);
-            if($permission->name != $request->input('name')) $permission->name = $request->input('name');
-            if($permission->comment != $request->input('comment')) $permission->comment = $request->input('comment');
+            if ($permission->name != $request->input('name')) $permission->name = $request->input('name');
+            if ($permission->comment != $request->input('comment')) $permission->comment = $request->input('comment');
             $permission->save();
             DB::commit();
-            return $this->success('update','success');
+            return $this->success('update', 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
@@ -89,16 +100,16 @@ class PermissionsController extends ApiController
         try {
             $permission = Permission::findOrFail($id);
             if ($permission->name == 'super_admin') {
-                throw new \Exception('超级管理员权限无法删除！',400);
+                throw new \Exception('超级管理员权限无法删除！', 400);
             }
             $permission->delete();
             DB::commit();
-            return $this->success('delete success','success');
+            return $this->success('delete success', 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
             $code = $e->getCode();
-            return failed_response($msg,'error',$code);
+            return failed_response($msg, 'error', $code);
         }
     }
 }

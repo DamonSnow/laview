@@ -120,6 +120,45 @@ export default [
     ]
   },
   {
+    path: '/articles',
+    name: 'article',
+    meta: {
+      icon: 'ios-paper',
+      title: '文章',
+      access: ['user']
+    },
+    component: Main,
+    children: [
+      {
+        path: 'index',
+        name: 'articles',
+        meta: {
+          icon: 'ios-paper',
+          title: '所有文章'
+        },
+        component: () => import('@/view/articles/article/index.vue')
+      },
+      {
+            path: 'categories',
+            name: 'categories',
+            meta: {
+                icon: 'ios-cog',
+                title: '分类目录'
+            },
+            component: () => import('@/view/articles/category/index.vue')
+      },
+      {
+        path: 'tags',
+        name: 'tags',
+        meta: {
+          icon: 'ios-pricetags',
+          title: '标签'
+        },
+        component: () => import('@/view/articles/tag/index.vue')
+      },
+    ]
+  },
+  {
     path: '/message',
     name: 'message',
     component: Main,
