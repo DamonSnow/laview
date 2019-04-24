@@ -2,35 +2,35 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\DictionaryType;
-use App\Http\Resources\DictionaryType AS DictionaryTypeResource;
+use App\Models\Tag;
+use App\Http\Resources\Tag AS TagResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
-class DictionaryTypeController extends ApiController
+class TagController extends ApiController
 {
     public function index()
     {
-        $dicTypes = new DictionaryType();
-        return DictionaryTypeResource::collection($dicTypes->paginate(Input::get('size') ?: 20));
+        $tag = new Tag();
+        return TagResource::collection($tag->paginate(Input::get('size') ?: 20));
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'dic_code' => 'required|unique:dictionary_types',
-            'dic_name' => 'required',
+            'slug' => 'required|unique:tags',
+            'name' => 'required',
         ]);
         if ($validator->fails()) {
             return failed_response($validator->errors()->toArray(), 'error', 1001);
         }
         DB::beginTransaction();
         try {
-            $dicType = DictionaryType::create($request->all());
+            $tag = Tag::create($request->all());
             DB::commit();
-            return $this->success($dicType, 'success');
+            return $this->success($tag, 'success');
         } catch (\Exception $e) {
             DB::rollBack();
             $msg = $e->getMessage();
@@ -42,15 +42,16 @@ class DictionaryTypeController extends ApiController
     public function update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'dic_name' => 'required',
+            'slug' => 'required|unique:tags',
+            'name' => 'required',
         ]);
         if ($validator->fails()) {
             return failed_response($validator->errors()->toArray(), 'error', 1001);
         }
         DB::beginTransaction();
         try {
-            $dicType = DictionaryType::find($id);
-            $dicType->update($request->all());
+            $tag = Tag::find($id);
+            $tag->update($request->all());
             DB::commit();
             return $this->success('update', 'success');
         } catch (\Exception $e) {
@@ -59,10 +60,5 @@ class DictionaryTypeController extends ApiController
             $code = $e->getCode();
             return $this->setStatusCode($code)->failed($msg);
         }
-    }
-
-    public function allDicTypes()
-    {
-        return $this->success(DictionaryType::all()->pluck('dic_name', 'id')->toArray(), 'success');
     }
 }

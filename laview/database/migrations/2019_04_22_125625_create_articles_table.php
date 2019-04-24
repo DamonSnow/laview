@@ -31,8 +31,8 @@ class CreateArticlesTable extends Migration
             $table->enum('recommend', ['T', 'F'])->default('F')->comment('是否推荐到首页');
             $table->enum('top', ['T', 'F'])->default('F')->comment('是否置顶');
             $table->integer('weight')->default(20)->comment('权重');
-            $table->enum('access_type',['PUB','PRI','PWD'])->default('PUB')->comment('访问权限类型：公开、私密、密码访问');
-            $table->string('access_value',255)->default('')->comment('访问权限值：PUB->不公开的用户ids,PRI->公开的用户ids,PWD->访问密码');
+            $table->tinyInteger('access_type')->default(1)->comment('访问权限类型：1公开、2私密、3密码访问');
+            $table->string('access_value',255)->default('')->comment('访问权限值：1->不公开的用户ids,2->公开的用户ids,3->访问密码');
             $table->string('created_year',4)->default('')->comment('创建年：2018');
             $table->string('created_month',4)->default('')->comment('01');
             $table->timestamps();

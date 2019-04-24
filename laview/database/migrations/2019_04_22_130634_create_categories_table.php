@@ -20,7 +20,6 @@ class CreateCategoriesTable extends Migration
             $table->integer('parent_id');
             $table->string('description', 100)->default('')->comment('描述');
             $table->timestamps();
-            $table->index('cover_image');
         });
     }
 

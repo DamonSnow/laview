@@ -65,6 +65,9 @@ $api->version('v1', function ($api) {
         $api->post('form_data/{id}/{version}', 'App\Http\Controllers\Api\FormDataController@store');
         $api->get('form_data/{id}', 'App\Http\Controllers\Api\FormDataController@show');
         $api->get('toggle_form/{id}', 'App\Http\Controllers\Api\FormController@toggle');
+
+        //标签相关路由
+        $api->resource('tags', 'App\Http\Controllers\Api\TagController', ['only' => ['index', 'store', 'update']]);
     });
 
 
