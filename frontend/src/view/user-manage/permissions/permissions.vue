@@ -10,7 +10,7 @@
         <Icon type="ios-lock"></Icon>
         {{ $t('permissions-list') }}
       </p>
-      <Button @click="openCreateForm" type="primary" slot="extra">{{ $t('add-permission') }}</Button>
+      <Button @click="openCreateForm(0)" type="primary" slot="extra">{{ $t('add-permission') }}</Button>
       <!--<Table :columns="columns" stripe :data="data" :loading="loading" border size="small"></Table>-->
       <TreeTable
               :data="data"
@@ -149,15 +149,6 @@
         size: 10,
         addModal: false,
         sortType: 'normal', //normal asc desc
-        permission: {
-          name: '',
-          comment: ''
-        },
-        ruleValidate: {
-          name: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-          ],
-        }
       }
     },
     methods: {

@@ -26,7 +26,9 @@ $api->version('v1', function ($api) {
 
         return response('this is version v1');
     });
+
     $api->group(['middleware' => ['auth:api', 'cors']], function ($api) {
+        $api->post('save_error_logger', 'App\Http\Controllers\Api\ErrorLoggerController@store');
         $api->post('logout', 'App\Http\Controllers\Api\AuthenticateController@logout');
         //用户相关
         $api->get('get_info', 'App\Http\Controllers\Api\UserController@getInfo')->name('get_info');
@@ -68,6 +70,9 @@ $api->version('v1', function ($api) {
 
         //标签相关路由
         $api->resource('tags', 'App\Http\Controllers\Api\TagController', ['only' => ['index', 'store', 'update']]);
+        //分类目录相关路由
+        $api->resource('categories', 'App\Http\Controllers\Api\CategoryController');
+        $api->get('children_categories/{id}', 'App\Http\Controllers\Api\CategoryController@children');
     });
 
 

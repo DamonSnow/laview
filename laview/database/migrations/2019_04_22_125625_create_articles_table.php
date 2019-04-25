@@ -22,14 +22,13 @@ class CreateArticlesTable extends Migration
             $table->integer('cover_image')->default(0)->comment('封面图片');
             $table->text('content')->comment('内容');
             $table->integer('user_id')->default(0)->comment('作者 id');
-            $table->integer('category_id')->default(0)->comment('分类 id');
             $table->unsignedInteger('view_count')->default(0)->comment('查看数量');
             $table->unsignedInteger('vote_count')->default(0)->comment('点赞数量');
             $table->unsignedInteger('comment_count')->default(0)->comment('评论数量');
             $table->unsignedInteger('collection_count')->default(0)->comment('收藏数量');
-            $table->enum('enable', ['T', 'F'])->default('F')->comment('启用状态：F禁用，T启用');
-            $table->enum('recommend', ['T', 'F'])->default('F')->comment('是否推荐到首页');
-            $table->enum('top', ['T', 'F'])->default('F')->comment('是否置顶');
+            $table->unsignedTinyInteger('enable')->default(1)->comment('启用状态：0禁用,1草稿，2启用');
+            $table->unsignedTinyInteger('recommend')->default(0)->comment('是否推荐到首页');
+            $table->unsignedTinyInteger('top')->default(0)->comment('是否置顶');
             $table->integer('weight')->default(20)->comment('权重');
             $table->tinyInteger('access_type')->default(1)->comment('访问权限类型：1公开、2私密、3密码访问');
             $table->string('access_value',255)->default('')->comment('访问权限值：1->不公开的用户ids,2->公开的用户ids,3->访问密码');

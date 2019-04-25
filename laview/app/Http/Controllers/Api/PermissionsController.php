@@ -41,7 +41,8 @@ class PermissionsController extends ApiController
                 'name'       => $request->input('name'),
                 'parent_id'  => $request->input('parent_id'),
                 'type'       => $request->input('type'),
-                'guard_name' => 'api', 'comment' => $request->input('comment'),
+                'guard_name' => 'api',
+                'comment' => $request->input('comment'),
             ]);
             return $this->success($permission, 'success');
         } catch (\Exception $e) {

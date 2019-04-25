@@ -130,6 +130,15 @@ export default [
     component: Main,
     children: [
       {
+        path: 'write',
+        name: 'write_article',
+        meta: {
+          icon: 'ios-paper',
+          title: '所有文章'
+        },
+        component: () => import('@/view/articles/article/write.vue')
+      },
+      {
         path: 'index',
         name: 'articles',
         meta: {

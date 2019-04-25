@@ -18,7 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->string('name', 20)->default('')->comment('分类名称');
             $table->string('code', 20)->default('')->comment('分类编码');
             $table->integer('parent_id');
-            $table->string('description', 100)->default('')->comment('描述');
+            $table->string('description', 100)->default('')->nullable()->comment('描述');
             $table->timestamps();
         });
     }
