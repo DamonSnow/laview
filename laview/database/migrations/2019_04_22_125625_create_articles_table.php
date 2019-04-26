@@ -34,6 +34,7 @@ class CreateArticlesTable extends Migration
             $table->string('access_value',255)->default('')->comment('访问权限值：1->不公开的用户ids,2->公开的用户ids,3->访问密码');
             $table->string('created_year',4)->default('')->comment('创建年：2018');
             $table->string('created_month',4)->default('')->comment('01');
+            $table->timestamp('publish_at')->comment('发布时间');
             $table->timestamps();
             $table->index('weight');
             $table->index('category_id');

@@ -133,7 +133,7 @@ export default [
         path: 'write',
         name: 'write_article',
         meta: {
-          icon: 'ios-paper',
+          icon: 'ios-brush',
           title: '所有文章'
         },
         component: () => import('@/view/articles/article/write.vue')

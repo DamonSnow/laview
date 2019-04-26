@@ -61,4 +61,10 @@ class TagController extends ApiController
             return $this->setStatusCode($code)->failed($msg);
         }
     }
+
+    public function search($query)
+    {
+        $tags = Tag::where('name','like',$query.'%')->get();
+        return TagResource::collection($tags);
+    }
 }

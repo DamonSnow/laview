@@ -28,3 +28,10 @@ export const updTag = (id, tag) => {
         method: 'put'
     })
 }
+
+export const searchTags = (query) => {
+    return axios.request({
+        url: `searchTags/${query}`,
+        method: 'get'
+    })
+}

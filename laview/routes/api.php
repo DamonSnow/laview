@@ -70,9 +70,15 @@ $api->version('v1', function ($api) {
 
         //标签相关路由
         $api->resource('tags', 'App\Http\Controllers\Api\TagController', ['only' => ['index', 'store', 'update']]);
+        $api->get('searchTags/{query?}', 'App\Http\Controllers\Api\TagController@search');
         //分类目录相关路由
         $api->resource('categories', 'App\Http\Controllers\Api\CategoryController');
         $api->get('children_categories/{id}', 'App\Http\Controllers\Api\CategoryController@children');
+        $api->get('categoryTree/{id?}', 'App\Http\Controllers\Api\CategoryController@all');
+        //文章相关路由
+        $api->resource('articles', 'App\Http\Controllers\Api\ArticleController');
+        //文件上传相关路由
+        $api->post('uploadImg', 'App\Http\Controllers\Api\AttachmentController@uploadImg');
     });
 
 

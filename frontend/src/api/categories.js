@@ -42,3 +42,10 @@ export const deleteCategory = (id) => {
         method: 'delete'
     })
 }
+
+export const categoryTree = () => {
+    return axios.request({
+        url: `categoryTree`,
+        method: 'get'
+    })
+}

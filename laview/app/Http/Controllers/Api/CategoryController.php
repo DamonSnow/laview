@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Handlers\MyTree;
 use App\Http\Resources\Category AS CategoryResource;
+use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -74,5 +76,33 @@ class CategoryController extends ApiController
         return CategoryResource::collection($categories);
     }
 
+    public function all($id = 0)
+    {
+        //获取谋篇文章的分类信息
+        $ids = [];
+        if(!empty($id)) {
+            $article = Article::find($id);
+            if($article) {
+
+            }
+        }
+        return $this->success($this->tree($ids), 'success');
+    }
+
+    public function tree($ids)
+    {
+        $categories = Category::all()->reduce(function ($arr, $item) use ($ids) {
+            $arr[] = [
+                'id' => $item->id,
+                'title' => $item->name,
+                'parent_id' => $item->parent_id,
+                'checked' => in_array($item->id, $ids) ? true : false
+            ];
+            return $arr;
+        }, []);
+        return MyTree::makeTree($categories,array(
+            'expanded' => true
+        ));
+    }
 
 }
