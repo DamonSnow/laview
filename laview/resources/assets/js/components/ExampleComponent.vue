@@ -1,16 +1,10 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card card-default">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Tabs>
+            <TabPane label="macOS" icon="social-apple">标签一的内容</TabPane>
+            <TabPane label="Windows" icon="social-windows">标签二的内容</TabPane>
+            <TabPane label="Linux" icon="social-tux">标签三的内容</TabPane>
+        </Tabs>
     </div>
 </template>
 
