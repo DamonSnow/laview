@@ -100,9 +100,13 @@ class CategoryController extends ApiController
             ];
             return $arr;
         }, []);
-        return MyTree::makeTree($categories,array(
-            'expanded' => true
-        ));
+        if(empty($categories)) {
+            return [];
+        } else {
+            return MyTree::makeTree($categories,array(
+                'expanded' => true
+            ));
+        }
     }
 
 }

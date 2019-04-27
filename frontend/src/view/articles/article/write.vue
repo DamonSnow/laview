@@ -118,14 +118,17 @@
     import { mavonEditor } from 'mavon-editor'
     import TreeSelect from '_c/tree-select'
     import 'mavon-editor/dist/css/index.css'
-    import { addArticle } from '@/api/articles'
+    import { addArticle, getArticle, updArticle } from '@/api/articles'
     import { categoryTree } from '@/api/categories'
     import { searchTags } from '@/api/tags'
     import { uploadImg } from '@/api/fileUpload'
     import Cropper from '@/components/cropper'
+    import { traverTree } from '@/libs/tools'
     import moment from 'moment'
+    import { mapMutations } from 'vuex'
     export default {
         name: 'write-article',
+
         components: {
             mavonEditor,
             TreeSelect,
@@ -186,18 +189,55 @@
                 setHeight: 0,
                 img_file: {},
                 tagLoading: false,
-                tagLists: []
+                tagLists: [],
+                action: 'add'
             };
         },
+        created: function () {
+            window.addEventListener('resize', this.handleResize)
+        },
         mounted: function () {
-            this.setHeight = window.innerHeight - this.$refs.mdeditor.$el.clientHeight - 10;
+            console.log(this.$route.params.id);
             categoryTree().then(res => {
                 this.treeData = res.data.data;
+                if(typeof this.$route.params.id !== 'undefined' && this.$route.params.id > 0) {
+                    getArticle(this.$route.params.id).then(res => {
+                        console.log(res.data.data)
+                        let articleData = res.data.data
+                        if(parseInt(res.status) === 200) {
+                            this.article = {
+                                title: articleData.title, //文章标题
+                                descriptions: articleData.descriptions, //文章描述
+                                content: articleData.content,//文章内容
+                                cover_image: articleData.cover_image, //文章封面
+                                enable: articleData.enable, //状态
+                                access_type: articleData.access_type, //公开度
+                                access_value: articleData.access_value, //密码
+                                publish_at: articleData.publish_at //发布时间
+                            }
 
+                            this.categories = articleData.categories;
+                            traverTree(this.treeData, this.categories)
+                            console.log(this.treeData)
+                            this.tagLists = articleData.tags;
+                            this.tags = this.tagLists.map(item => {
+                                return item.id;
+                            });
+                            this.action = 'update';
+                        } else {
+                            this.$Message.error('加载文章失败')
+                        }
+                    })
+                }
             })
         },
         methods: {
-
+            ...mapMutations([
+                'closeTag'
+            ]),
+            handleResize() {
+                this.setHeight = window.innerHeight - this.$refs.mdeditor.$el.clientHeight - 10;
+            },
             changePublish(data) {
                 this.article.publish_at = data;
             },
@@ -256,13 +296,35 @@
                 }
                 console.log(categoryIds)
                 console.log(this.article)
-                addArticle(this.article, {'categories':categoryIds},{'tags':this.tags}).then(res => {
-                    if(parseInt(res.status) === 200) {
-                        this.$Message.success('新增文章成功')
-                    } else {
-                        this.$Message.success('新增文章失败')
-                    }
-                })
+                if(this.action === 'add') {
+                    addArticle(this.article, {'categories':categoryIds},{'tags':this.tags}).then(res => {
+                        if(parseInt(res.status) === 200) {
+                            this.$Message.success('新增文章成功')
+                            this.closeTag({
+                                name: `write_article`
+                            })
+                            this.$router.push('/articles/index')
+                        } else {
+                            this.$Message.success('新增文章失败')
+                        }
+                    })
+                } else {
+                    updArticle(this.$route.params.id, this.article, {'categories':categoryIds},{'tags':this.tags}).then(res => {
+                        if(parseInt(res.status) === 200) {
+                            this.$Message.success('更新文章成功')
+                            this.closeTag({
+                                name: `write_article`,
+                                params: {
+                                    id: this.$route.params.id
+                                }
+                            })
+                            this.$router.push('/articles/index')
+                        } else {
+                            this.$Message.success('更新文章失败')
+                        }
+                    })
+                }
+
             },
             imgAdd(pos, file){
                 let formData = new FormData();

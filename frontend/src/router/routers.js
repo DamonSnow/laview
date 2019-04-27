@@ -130,11 +130,14 @@ export default [
     component: Main,
     children: [
       {
-        path: 'write',
+        path: 'write/:id?',
         name: 'write_article',
         meta: {
           icon: 'ios-brush',
-          title: '所有文章'
+          title: '所有文章',
+          hideInBread: true,
+          hideInMenu: true,
+            notCache: true
         },
         component: () => import('@/view/articles/article/write.vue')
       },

@@ -16,6 +16,7 @@
           :total="total"
           :current.sync="current"
           show-sizer
+          show-elevator
           @on-change="getData"
           @on-page-size-change="handleChangeSize"
         ></Page>

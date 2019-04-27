@@ -128,9 +128,13 @@ class RoleController extends ApiController
             ];
             return $arr;
         }, []);
-        $data = MyTree::makeTree($permissionData,array(
-            'expanded' => true
-        ));
+        $data = [];
+        if(!empty($permissionData)) {
+            $data = MyTree::makeTree($permissionData,array(
+                'expanded' => true
+            ));
+        }
+
         return $this->success($data, 'success');
     }
 

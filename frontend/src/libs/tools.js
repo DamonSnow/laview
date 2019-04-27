@@ -242,3 +242,14 @@ export const obj2String = (o) => {
     }
     return o.toString();
 }
+
+export const traverTree = (data, arr) => {
+  data.forEach(item => {
+    if (arr.indexOf(item.id) !== -1) {
+      item.checked = true;
+    }
+    if (item.children) {
+      traverTree(item.children, arr)
+    }
+  })
+}
