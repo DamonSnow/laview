@@ -20,7 +20,8 @@ class CreateArticlesTable extends Migration
             $table->string('keywords', 255)->default('')->nullable()->comment('关键词,以英文逗号隔开');
             $table->string('descriptions', 255)->default('')->comment('描述');
             $table->integer('cover_image')->default(0)->nullable()->comment('封面图片');
-            $table->text('content')->comment('内容');
+            $table->text('content')->comment('内容markdown格式');
+            $table->text('content_html')->comment('内容html格式');
             $table->integer('user_id')->default(0)->comment('作者 id');
             $table->unsignedInteger('view_count')->default(0)->comment('查看数量');
             $table->unsignedInteger('vote_count')->default(0)->comment('点赞数量');

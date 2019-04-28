@@ -22,13 +22,14 @@ class ArticleController extends ApiController
     {
         return new ArticleResource(Article::find($id), 'detail');
     }
-    
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
+            'title'        => 'required',
             'descriptions' => 'required',
-            'content' => 'required',
+            'content'      => 'required',
+            'content_html' => 'required',
         ]);
         if ($validator->fails()) {
             return failed_response($validator->errors()->toArray(), 'error', 1001);
@@ -38,21 +39,22 @@ class ArticleController extends ApiController
             $time = Carbon::now();
 
             $article = Article::create([
-                'title' => $request->input('title'),
-                'keywords' => '',
-                'descriptions' =>$request->input('descriptions'),
-                'cover_image' => $request->input('cover_image'),
-                'content' => $request->input('content'),
-                'enable' => $request->input('enable'),
-                'access_type' => $request->input('access_type'),
+                'title'         => $request->input('title'),
+                'keywords'      => '',
+                'descriptions'  => $request->input('descriptions'),
+                'cover_image'   => $request->input('cover_image'),
+                'content'       => $request->input('content'),
+                'content_html'  => $request->input('content_html'),
+                'enable'        => $request->input('enable'),
+                'access_type'   => $request->input('access_type'),
                 'access_value'  => $request->input('access_value'),
-                'created_year' => $time->year,
+                'created_year'  => $time->year,
                 'created_month' => $time->month,
-                'user_id' => auth('api')->id(),
-                'publish_at' => $request->input('publish_at')
+                'user_id'       => auth('api')->id(),
+                'publish_at'    => $request->input('publish_at'),
             ]);
 
-            if(!$article) throw new \Exception('新增文章事变',10001);
+            if (!$article) throw new \Exception('新增文章事变', 10001);
             foreach ($request->input('tags') as $tag) {
                 DB::insert('insert into article_tag (article_id, tag_id) values (?, ?)', [$article->id, $tag]);
             }
@@ -72,9 +74,10 @@ class ArticleController extends ApiController
     public function update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
+            'title'        => 'required',
             'descriptions' => 'required',
-            'content' => 'required',
+            'content'      => 'required',
+            'content_html' => 'required',
         ]);
         if ($validator->fails()) {
             return failed_response($validator->errors()->toArray(), 'error', 1001);
@@ -87,13 +90,14 @@ class ArticleController extends ApiController
             if ($article->descriptions != $request->input('descriptions')) $article->descriptions = $request->input('descriptions');
             if ($article->cover_image != $request->input('cover_image')) $article->cover_image = $request->input('cover_image');
             if ($article->content != $request->input('content')) $article->content = $request->input('content');
+            if ($article->content_html != $request->input('content_html')) $article->content_html = $request->input('content_html');
             if ($article->enable != $request->input('enable')) $article->enable = $request->input('enable');
             if ($article->access_type != $request->input('access_type')) $article->access_type = $request->input('access_type');
             if ($article->access_value != $request->input('access_value')) $article->access_value = $request->input('access_value');
             if ($article->publish_at != $request->input('publish_at')) $article->publish_at = $request->input('publish_at');
-            if(!$article->save()) throw new \Exception('更新文章失败',1002);
-            DB::delete('delete from article_tag WHERE article_id=?',[$id]);
-            DB::delete('delete from article_category WHERE article_id=?',[$id]);
+            if (!$article->save()) throw new \Exception('更新文章失败', 1002);
+            DB::delete('delete from article_tag WHERE article_id=?', [$id]);
+            DB::delete('delete from article_category WHERE article_id=?', [$id]);
             foreach ($request->input('tags') as $tag) {
                 DB::insert('insert into article_tag (article_id, tag_id) values (?, ?)', [$article->id, $tag]);
             }
@@ -108,5 +112,39 @@ class ArticleController extends ApiController
             $code = $e->getCode();
             return $this->setStatusCode($code)->failed($msg);
         }
+    }
+
+    public function getArticles($category = 0)
+    {
+        $categoryIds = DB::table('article_category')->where('category_id', '=', $category)->pluck('article_id');
+        $articles = Article::with([
+            'categories' => function ($query) {
+                $query->select('name');
+            },
+            'tags'       => function ($query) {
+                $query->select('name');
+            },
+            'user'       => function ($query) {
+                $query->select('name');
+            },
+        ])->whereIn('id', $categoryIds)->get();
+        return $this->success($articles, 'success');
+    }
+
+    public function getArticleById($id)
+    {
+
+        $articles = Article::with([
+            'categories' => function ($query) {
+                $query->select('name');
+            },
+            'tags'       => function ($query) {
+                $query->select('name');
+            },
+            'user'       => function ($query) {
+                $query->select('name');
+            },
+        ])->find($id);
+        return $this->success($articles, 'success');
     }
 }

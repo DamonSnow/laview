@@ -89,8 +89,7 @@ $api->version('v1', function ($api) {
     $api->post('refresh', 'App\Http\Controllers\Api\AuthenticateController@refresh');
 });
 
-$api->version('v2', function ($api) {
-    $api->get('version', function () {
-        return response('this is version v2');
-    });
+$api->version('v1', function ($api) {
+    $api->get('getArticles/{category?}', 'App\Http\Controllers\Api\ArticleController@getArticles');
+    $api->get('getArticleById/{id}', 'App\Http\Controllers\Api\ArticleController@getArticleById');
 });

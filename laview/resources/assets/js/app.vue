@@ -53,12 +53,15 @@
                 </Menu>
             </Header>
             <Content :style="{padding: '0 50px'}">
+                <Row>
+                    <Col span="18">
+                    <router-view></router-view>
+                    </Col>
+                    <Col span="6">
+                        类别，标签等
+                    </Col>
+                </Row>
 
-                <Card>
-                    <div style="min-height: 200px;">
-                        <router-view></router-view>
-                    </div>
-                </Card>
             </Content>
             <Footer class="layout-footer-center">2011-2016 &copy; TalkingData</Footer>
         </Layout>
