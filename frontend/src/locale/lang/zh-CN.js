@@ -102,7 +102,7 @@ export default {
   editor_page: '富文本编辑器',
   icons_page: '自定义图标',
   img_cropper_page: '图片编辑器',
-  update: '上传数据',
+  update: '更新',
   doc: '文档',
   update_table_page: '上传CSV文件',
   update_paste_page: '粘贴表格数据',

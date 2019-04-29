@@ -30,7 +30,20 @@
             <Header>
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">
-                        <img src="./assets/images/banner.png" style="width: 100%;height: 100%" alt="">
+                        <!--<img src="./assets/images/banner.png" style="width: 100%;height: 100%" alt="">-->
+                        <vue-typer
+                                :text='["Arya Stark","Jon Snow","Daenerys Targaryen","Melisandre","Tyrion Lannister"]'
+                                :repeat='Infinity'
+                                :shuffle='true'
+                                initial-action='typing'
+                                :pre-type-delay='70'
+                                :type-delay='80'
+                                :pre-erase-delay='2000'
+                                :erase-delay='50'
+                                erase-style='backspace'
+                                :erase-on-complete='true'
+                                caret-animation='smooth'
+                        ></vue-typer>
                     </div>
                     <div class="layout-nav">
                         <MenuItem name="1">
@@ -53,7 +66,7 @@
                 </Menu>
             </Header>
             <Content :style="{padding: '0 50px'}">
-                <Row>
+                <Row style="margin-top: 16px;">
                     <Col span="18">
                     <router-view></router-view>
                     </Col>
@@ -68,7 +81,35 @@
     </div>
 </template>
 <script>
+    import { VueTyper } from 'vue-typer'
     export default {
-
+        components: {
+            VueTyper
+        }
     }
 </script>
+<style>
+
+    .vue-typer {
+        font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+        font-size: 20px;
+    }
+    .vue-typer .custom.char.typed {
+        color: #009688;
+    }
+    .vue-typer .custom.char.selected {
+        color: #E91E63;
+    }
+
+    .vue-typer .custom.caret {
+        animation: rocking 1s ease-in-out 0s infinite;
+        front-size: 20px;
+    }
+    .vue-typer .custom.caret.typing {
+        background-color: #009688;
+    }
+    .vue-typer .custom.caret.selecting {
+        display: inline-block;
+        background-color: #E91E63;
+    }
+</style>

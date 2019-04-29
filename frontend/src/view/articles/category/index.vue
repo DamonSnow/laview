@@ -177,7 +177,7 @@
         let vm = this;
         getChildrenCategories(row.id).then(function(res) {
             if (res.data.data) {
-                console.log(res.data.data)
+
                 vm.data = callback(index, level, res.data.data);
             }
         });

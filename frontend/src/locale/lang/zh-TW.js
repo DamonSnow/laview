@@ -99,7 +99,7 @@ export default {
   editor_page: '富文本編輯器',
   icons_page: '自定義圖標',
   img_cropper_page: '圖片編輯器',
-  update: '上傳數據',
+  update: '更新',
   join_page: 'QQ群',
   doc: '文檔',
   update_table_page: '上傳CSV文件',

@@ -21,6 +21,8 @@
                             ref="mdeditor"
                             :toolbars="markdownOption"
                             v-model="article.content"
+                            :ishljs = "true"
+                            codeStyle='atom-one-dark'
                             @imgAdd="imgAdd"
                             @imgDel="imgDel"
                     ></mavon-editor>
@@ -28,13 +30,21 @@
             </Row>
 
             <!--:toolbarsFlag=false :subfield=false :defaultOpen="preview"-->
-            <FormItem :label="$t('cover')" style="margin-top: 16px">
-                <cropper
-                        :src="article.cover_image"
-                        crop-button-text="确认提交"
-                        @on-crop="handleCroped"
-                ></cropper>
-            </FormItem>
+            <Row  style="margin-top: 16px">
+                <Col span="12">
+                <FormItem :label="$t('cover')">
+                    <cropper
+                            :src="imgSrc"
+                            crop-button-text="确认提交"
+                            @on-crop="handleCroped"
+                    ></cropper>
+                </FormItem>
+                </Col>
+                <Col span="12">
+                <img :src="article.cover_image" style="width: 100%;height: 100%" alt="">
+                </Col>
+            </Row>
+
 
         </Card>
       </Col>
@@ -65,7 +75,10 @@
                         <FormItem :label="$t('publish_at')">
                             <DatePicker type="datetime" @on-change="changePublish" format="yyyy-MM-dd HH:mm" v-model="article.publish_at"></DatePicker>
                         </FormItem>
-                        <Button type="primary" @click="publish">{{ $t('publish') }}</Button>
+                        <Button type="primary" @click="publish">
+                            <span v-if="action==='add'">{{ $t('publish') }}</span>
+                            <span v-else>{{ $t('update') }}</span>
+                        </Button>
                     </div>
                 </Panel>
 
@@ -176,7 +189,8 @@
                 article: {
                     title: '', //文章标题
                     descriptions: '', //文章描述
-                    content: '',//文章内容
+                    content: '',//文章内容markdown
+                    content_html: '',//文章内容html
                     cover_image: '', //文章封面
                     category_id: 0, //分类
                     enable: 1, //状态
@@ -188,6 +202,7 @@
                 categories: [],
                 setHeight: 0,
                 img_file: {},
+                imgSrc: '',
                 tagLoading: false,
                 tagLists: [],
                 action: 'add'
@@ -197,12 +212,12 @@
             window.addEventListener('resize', this.handleResize)
         },
         mounted: function () {
-            console.log(this.$route.params.id);
+
             categoryTree().then(res => {
                 this.treeData = res.data.data;
                 if(typeof this.$route.params.id !== 'undefined' && this.$route.params.id > 0) {
                     getArticle(this.$route.params.id).then(res => {
-                        console.log(res.data.data)
+
                         let articleData = res.data.data
                         if(parseInt(res.status) === 200) {
                             this.article = {
@@ -218,7 +233,7 @@
 
                             this.categories = articleData.categories;
                             traverTree(this.treeData, this.categories)
-                            console.log(this.treeData)
+
                             this.tagLists = articleData.tags;
                             this.tags = this.tagLists.map(item => {
                                 return item.id;
@@ -272,7 +287,7 @@
                     });
                     return false;
                 }
-                console.log(this.article.content)
+                this.article.content_html = this.$refs.mdeditor.d_render;
                 if(this.article.access_type===3 && this.article.access_value.length <= 0) {
                     this.$Message.error({
                         content: '公开度为密码保护时，密码不能为空',
@@ -294,8 +309,7 @@
                     });
                     return false;
                 }
-                console.log(categoryIds)
-                console.log(this.article)
+
                 if(this.action === 'add') {
                     addArticle(this.article, {'categories':categoryIds},{'tags':this.tags}).then(res => {
                         if(parseInt(res.status) === 200) {
@@ -349,7 +363,6 @@
                 if(query.length >= 2) {
                     this.tagLoading = true;
                     searchTags(query).then(res => {
-                        console.log(res)
                         this.tagLoading = false;
                         if(parseInt(res.status) === 200) {
                             this.tagLists = res.data.data

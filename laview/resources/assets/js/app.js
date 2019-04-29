@@ -12,8 +12,10 @@ import iView from 'iview';
 import store from './store'
 import 'iview/dist/styles/iview.css';
 import axios from './libs/http'
+import highlight from './libs/highlight'
 // 导入iview
 Vue.use(iView);
+Vue.use(highlight);
 window.axios = axios;
 
 /**
