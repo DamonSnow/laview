@@ -45,7 +45,6 @@ export default {
       if (roleId) {
         permissionByRoleId( roleId ).then(res => {
           this.data = res.data.data
-          console.log(this.data)
         });
       }
     },
@@ -75,7 +74,6 @@ export default {
     }
   },
   mounted() {
-      console.log(this.role)
     this.getPermissionByRoleId(this.role.id);
   }
 };

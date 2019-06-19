@@ -13,7 +13,7 @@ import installPlugin from '@/plugin'
 import 'iview/dist/styles/iview.css'
 import './index.less'
 import '@/assets/icons/iconfont.css'
-import TreeTable from 'tree-table-vue'
+// import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
 import formCreate from 'form-create'
 import 'v-org-tree/dist/v-org-tree.css'
@@ -24,7 +24,7 @@ import 'v-org-tree/dist/v-org-tree.css'
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
 })
-Vue.use(TreeTable)
+// Vue.use(TreeTable)
 Vue.use(VOrgTree)
 Vue.use(formCreate)
 /**
