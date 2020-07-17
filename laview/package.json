@@ -28,7 +28,7 @@
         "cross-env": "^5.1",
         "jquery": "^3.2",
         "laravel-mix": "^2.0",
-        "lodash": "^4.17.13",
+        "lodash": "^4.17.19",
         "css-loader": "^0.23.1",
         "node-sass": "^4.7.2"
     }
