@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "axios": "^0.18",
-        "highlight.js": "^9.15.6",
+        "highlight.js": "^10.1.2",
         "iview": "^3.2.2",
         "js-cookie": "^2.2.0",
         "less": "^3.0.0",
